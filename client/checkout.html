@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Checkout</title>
+
+<style>
+
+/* LAYOUT */
+.container{
+  padding: 50px 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* HEADER */
+.header{
+  margin-bottom: 25px;
+}
+
+.header h2{
+  margin: 0;
+}
+
+.header p{
+  color: #666;
+  margin-top: 5px;
+}
+
+/* GRID (clean professional layout) */
+.checkout-grid{
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+}
+
+/* MOBILE FALLBACK */
+@media(max-width: 768px){
+  .checkout-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CARD */
+.card{
+  background: rgba(255,255,255,0.9);
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+  backdrop-filter: blur(10px);
+  transition: 0.25s ease;
+}
+
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* CARD TITLE */
+.card h3{
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+/* INPUTS */
+input, textarea{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* SUMMARY ITEMS */
+.summary-item{
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.summary-total{
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* TRUST BADGE */
+.trust{
+  margin-top: 15px;
+  font-size: 13px;
+  color: #16c784;
+}
+
+/* BUTTON */
+button{
+  margin-top: 20px;
+  padding: 14px;
+  width: 100%;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+
+  background: linear-gradient(135deg,#16c784,#00c2ff);
+  color: white;
+
+  transition: 0.25s ease;
+}
+
+button:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(22,199,132,0.25);
+}
+
+button:active{
+  transform: translateY(-2px) scale(0.98);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <h2>Checkout</h2>
+  <p>Complete your order with Cash on Delivery</p>
+</div>
+
+<div class="checkout-grid">
+
+  <!-- LEFT: DELIVERY -->
+  <div class="card">
+    <h3>Delivery Details</h3>
+
+    <input id="name" placeholder="Full Name">
+    <input id="phone" placeholder="Phone Number">
+    <textarea id="address" placeholder="Delivery Address"></textarea>
+  </div>
+
+  <!-- RIGHT: SUMMARY -->
+  <div class="card">
+    <h3>Order Summary</h3>
+    <div id="summary">Loading...</div>
+
+    <div class="trust">
+      ✔ Secure Cash on Delivery
+    </div>
+
+    <button onclick="placeOrder()">Place Order</button>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location="login.html";
+
+// LOAD CART
+async function loadCart(){
+const res = await fetch("/api/cart", {
+headers: { Authorization: "Bearer " + token }
+});
+
+const data = await res.json();
+
+let total = 0;
+let html = "";
+
+data.forEach(item => {
+total += item.price * item.quantity;
+
+html += `
+<div class="summary-item">
+  <span>${item.name} x ${item.quantity}</span>
+  <span>ZMW ${item.price * item.quantity}</span>
+</div>
+`;
+});
+
+html += `
+<div class="summary-total">
+  Total: ZMW ${total}
+</div>
+`;
+
+document.getElementById("summary").innerHTML = html;
+}
+
+loadCart();
+
+// PLACE ORDER
+async function placeOrder(){
+
+const order = {
+name: name.value,
+phone: phone.value,
+address: address.value
+};
+
+if(!order.name || !order.phone || !order.address){
+alert("Fill all details");
+return;
+}
+
+const res = await fetch("/api/checkout", {
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer " + token
+},
+body: JSON.stringify(order)
+});
+
+const data = await res.json();
+
+alert(data.message);
+window.location="buyer-dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

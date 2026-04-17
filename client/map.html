@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+<title>Charging Stations</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+body{margin:0;}
+#map{height:100vh;}
+</style>
+
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+const map = L.map('map').setView([-13.1339,27.8493],6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+async function load(){
+try{
+
+const res = await fetch("/api/stations"); // ✅ FIXED (no localhost)
+const data = await res.json();
+
+data.forEach(s=>{
+  L.marker([s.latitude,s.longitude])
+  .addTo(map)
+  .bindPopup(`<b>${s.name}</b><br>${s.description}`);
+});
+
+}catch(err){
+alert("Failed to load stations");
+}
+}
+
+load();
+
+</script>
+
+</body>
+</html>

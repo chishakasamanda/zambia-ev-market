@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>Wishlist</title>
+
+<style>
+
+/* HEADER */
+.header{
+  padding: 30px 40px 10px;
+}
+
+.header h1{
+  margin: 0;
+}
+
+.header p{
+  color: #666;
+  margin-top: 5px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+  padding:30px 40px;
+}
+
+/* CARD (same style as homepage) */
+.card{
+  background: rgba(255,255,255,0.85);
+  padding:15px;
+  border-radius:18px;
+
+  border:1px solid rgba(0,0,0,0.06);
+  backdrop-filter: blur(10px);
+
+  transition:0.25s ease;
+  text-align:center;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 25px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+/* TEXT */
+.card h3{
+  margin:10px 0 5px;
+}
+
+.card p{
+  color:#666;
+  margin:0;
+}
+
+/* BUTTON */
+button{
+  margin-top:12px;
+  padding:10px;
+  width:100%;
+  border:none;
+  border-radius:30px;
+  font-weight:600;
+  cursor:pointer;
+
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+
+  transition:0.25s ease;
+}
+
+button:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+}
+
+button:active{
+  transform:translateY(-2px) scale(0.98);
+}
+
+/* EMPTY STATE */
+.empty{
+  text-align:center;
+  padding:60px;
+  color:#777;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>My Wishlist ❤️</h1>
+  <p>Saved items you’re interested in</p>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="wishlist"></div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location.href="login.html";
+
+// LOAD WISHLIST
+async function loadWishlist(){
+try{
+const res = await fetch("/api/wishlist",{
+headers:{ Authorization:"Bearer "+token }
+});
+
+const data = await res.json();
+const container = document.getElementById("wishlist");
+container.innerHTML="";
+
+if(data.length === 0){
+  container.innerHTML = `<div class="empty">No items in wishlist</div>`;
+  return;
+}
+
+data.forEach(p=>{
+container.innerHTML+=`
+<div class="card">
+
+<img src="${p.image_url}" onerror="this.style.display='none'">
+
+<h3>${p.name}</h3>
+<p>ZMW ${p.price}</p>
+
+<button onclick="addToCart(${p.id})">
+Move to Cart
+</button>
+
+</div>
+`;
+});
+}catch{
+alert("Failed to load wishlist");
+}
+}
+
+// MOVE TO CART
+async function addToCart(id){
+try{
+await fetch("/api/cart/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({product_id:id})
+});
+
+alert("Moved to cart");
+loadWishlist();
+
+}catch{
+alert("Error moving to cart");
+}
+}
+
+loadWishlist();
+
+</script>
+
+</body>
+</html>

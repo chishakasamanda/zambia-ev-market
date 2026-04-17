@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+<title>Buyer Register</title>
+
+<style>
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#2c5364);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+color:white;
+}
+.card{
+background:#ffffff10;
+padding:30px;
+border-radius:15px;
+width:320px;
+}
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:none;
+border-radius:8px;
+}
+button{
+width:100%;
+padding:10px;
+border:none;
+background:#00ffcc;
+font-weight:bold;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Buyer Registration ⚡</h2>
+
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
+
+<p style="text-align:center;">
+<a href="login.html">Login</a>
+</p>
+</div>
+
+<script>
+async function register(){
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+if(!name || !email || !password){
+alert("Fill all fields");
+return;
+}
+
+try{
+
+const res = await fetch("/api/register",{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ name,email,password,role:"buyer" })
+});
+
+const data = await res.json();
+
+if(!res.ok){
+alert(data.message);
+return;
+}
+
+alert("Registered successfully");
+window.location="login.html";
+
+}catch{
+alert("Server error");
+}
+}
+</script>
+
+</body>
+</html>

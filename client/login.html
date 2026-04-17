@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>Login - Zambia EV Market</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SAME FONT AS HOMEPAGE -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+/* ✅ REMOVE DARK THEME → MATCH HOMEPAGE */
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* NAVBAR SAME AS HOME */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 40px;
+  border-bottom:1px solid #eee;
+  background:white;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:#00c896;
+}
+
+/* CENTER LOGIN */
+.container{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* LOGIN CARD (MATCH HOMEPAGE CARDS) */
+.card{
+  background: rgba(255,255,255,0.95);
+  padding:40px;
+  border-radius:18px;
+  width:340px;
+  text-align:center;
+
+  border:1px solid rgba(0,0,0,0.05);
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* TEXT */
+h2{
+  margin-bottom:10px;
+}
+
+.subtitle{
+  font-size:14px;
+  color:#666;
+  margin-bottom:20px;
+}
+
+/* INPUTS */
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ddd;
+  outline:none;
+  transition:0.2s;
+}
+
+input:focus{
+  border-color:#16c784;
+}
+
+/* BUTTON (MATCH CTA STYLE) */
+button{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:none;
+  border-radius:25px;
+
+  background:#16c784;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+
+  transition:0.25s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(22,199,132,0.25);
+}
+
+/* FOOTER LINKS */
+.footer{
+  margin-top:15px;
+  font-size:14px;
+}
+
+a{
+  color:#16c784;
+  text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">⚡Zambia EV Market</div>
+</div>
+
+<!-- LOGIN -->
+<div class="container">
+
+  <div class="card">
+
+    <h2>Welcome Back</h2>
+    <div class="subtitle">Login to continue</div>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="footer">
+      <a href="register.html">Seller Register</a> |
+      <a href="buyer-register.html">Buyer Register</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+async function login(){
+
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
+
+if(!email || !password){
+alert("Fill all fields");
+return;
+}
+
+try{
+
+const res = await fetch("/api/login",{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ email, password })
+});
+
+const data = await res.json();
+
+if(!res.ok){
+alert(data.message);
+return;
+}
+
+localStorage.setItem("token", data.token);
+localStorage.setItem("role", data.role);
+localStorage.setItem("name", data.name);
+
+if(data.role === "seller"){
+window.location.href = "products.html";
+}else{
+window.location.href = "buyer-dashboard.html";
+}
+
+}catch(err){
+alert("Server error");
+}
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+<title>Seller Register</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:linear-gradient(135deg,#0f2027,#2c5364);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
+.card{
+  background:#ffffff10;
+  padding:30px;
+  border-radius:15px;
+  backdrop-filter:blur(10px);
+  width:320px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:8px;
+}
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  background:#00ffcc;
+  font-weight:bold;
+  border-radius:8px;
+  cursor:pointer;
+}
+a{
+  color:#00ffcc;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Seller Registration ⚡</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="register()">Register as Seller</button>
+
+<p style="text-align:center;margin-top:15px;">
+Already have an account? 
+<a href="login.html">Login here</a>
+</p>
+</div>
+
+<script>
+async function register(){
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+
+  if(!name || !email || !password){
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        name, 
+        email, 
+        password,
+        role: "seller"
+      })
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+      alert("Seller registered successfully");
+      window.location.href = "login.html";
+    } else {
+      alert(data.message);
+    }
+
+  } catch(err){
+    alert("Server error");
+  }
+}
+</script>
+</body>
+</html>

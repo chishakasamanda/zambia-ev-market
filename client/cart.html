@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+
+/* PAGE WRAPPER */
+.container{
+  padding:40px;
+}
+
+/* NAVBAR MATCH HOME */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 40px;
+  border-bottom:1px solid #eee;
+  background:white;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:#00c896;
+}
+
+.nav-btn{
+  background:#111;
+  color:white;
+  padding:10px 18px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+}
+
+/* CART ITEM (MODERN CARD STYLE) */
+.item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+
+  background:rgba(255,255,255,0.85);
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:15px;
+
+  border:1px solid rgba(0,0,0,0.05);
+  backdrop-filter:blur(8px);
+
+  transition:0.25s ease;
+}
+
+.item:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* LEFT SIDE */
+.item-left{
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.item img{
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+/* PRODUCT TEXT */
+.item-left h4{
+  margin:0;
+}
+
+.item-left p{
+  margin:4px 0 0;
+  color:#666;
+}
+
+/* CONTROLS */
+.controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.controls button{
+  padding:6px 12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#f3f5f7;
+  font-weight:600;
+
+  transition:0.2s;
+}
+
+.controls button:hover{
+  background:#e4e7eb;
+}
+
+/* TOTAL */
+.total{
+  margin-top:25px;
+  font-size:22px;
+  font-weight:600;
+}
+
+/* CHECKOUT BUTTON */
+.checkout-btn{
+  margin-top:20px;
+  padding:14px;
+  width:100%;
+  border:none;
+  border-radius:30px;
+
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+
+  transition:0.25s ease;
+}
+
+.checkout-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(22,199,132,0.25);
+}
+
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">⚡ Zambia EV Market</div>
+  <button class="nav-btn" onclick="back()">← Back</button>
+</div>
+
+<div class="container">
+
+<h2>Your Cart 🛒</h2>
+
+<div id="cartList"></div>
+
+<div class="total" id="total"></div>
+
+<button class="checkout-btn" onclick="goToCheckout()">
+Proceed to Checkout
+</button>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location="login.html";
+
+function back(){
+  window.location="buyer-dashboard.html";
+}
+
+// GO TO CHECKOUT
+function goToCheckout(){
+  window.location = "checkout.html";
+}
+
+// LOAD CART
+async function loadCart(){
+try{
+
+const res = await fetch("/api/cart",{
+headers:{ Authorization:"Bearer "+token }
+});
+
+if(!res.ok) throw new Error();
+
+const data = await res.json();
+
+const list = document.getElementById("cartList");
+list.innerHTML = "";
+
+let total = 0;
+
+if(data.length === 0){
+list.innerHTML = "<p>Your cart is empty</p>";
+document.getElementById("total").innerText = "";
+return;
+}
+
+data.forEach(p=>{
+
+total += p.price * p.quantity;
+
+list.innerHTML += `
+<div class="item">
+
+  <div class="item-left">
+    <img src="${p.image_url}" onerror="this.style.display='none'">
+    <div>
+      <h4>${p.name}</h4>
+      <p>ZMW ${p.price}</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="updateQty(${p.id}, ${p.quantity-1})">−</button>
+    <span>${p.quantity}</span>
+    <button onclick="updateQty(${p.id}, ${p.quantity+1})">+</button>
+  </div>
+
+</div>
+`;
+});
+
+document.getElementById("total").innerText = "Total: ZMW " + total;
+
+}catch(err){
+console.log(err);
+alert("Failed to load cart");
+}
+}
+
+// UPDATE QUANTITY
+async function updateQty(id, qty){
+
+if(qty < 1) return;
+
+await fetch("/api/cart/update",{
+method:"PUT",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({
+product_id:id,
+quantity:qty
+})
+});
+
+loadCart();
+}
+
+loadCart();
+
+</script>
+
+</body>
+</html>

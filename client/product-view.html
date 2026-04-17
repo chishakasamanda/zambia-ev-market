@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+<title>Product Details</title>
+
+<style>
+body{
+margin:0;
+font-family:Segoe UI;
+background:#0f2027;
+color:white;
+}
+
+/* CONTAINER */
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px;
+}
+
+/* MAIN LAYOUT */
+.product-box{
+display:flex;
+gap:30px;
+flex-wrap:wrap;
+background:#1c2b36;
+padding:20px;
+border-radius:12px;
+}
+
+/* IMAGE */
+.product-img{
+flex:1;
+min-width:280px;
+}
+
+.product-img img{
+width:100%;
+border-radius:10px;
+object-fit:cover;
+}
+
+/* INFO */
+.product-info{
+flex:1;
+min-width:280px;
+}
+
+.price{
+font-size:22px;
+margin-top:10px;
+color:#00ffcc;
+}
+
+/* BUTTONS */
+.actions{
+margin-top:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.cart-btn{
+background:#00ffcc;
+color:black;
+}
+
+.wish-btn{
+background:#ff4d6d;
+color:white;
+}
+
+/* SELLER */
+.seller{
+margin-top:20px;
+background:#243b4a;
+padding:15px;
+border-radius:10px;
+}
+
+/* LOADING */
+.loading{
+text-align:center;
+padding:50px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="product" class="loading">Loading product...</div>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location="login.html";
+
+const id = new URLSearchParams(window.location.search).get("id");
+
+// ================= LOAD PRODUCT =================
+async function loadProduct(){
+try{
+const res = await fetch("/api/products/"+id,{
+headers:{ Authorization:"Bearer "+token }
+});
+
+const p = await res.json();
+
+if(!p || !p.id){
+document.getElementById("product").innerHTML="Product not found";
+return;
+}
+
+document.getElementById("product").innerHTML=`
+<div class="product-box">
+
+<div class="product-img">
+<img src="${p.image_url}">
+</div>
+
+<div class="product-info">
+
+<h2>${p.name}</h2>
+
+<div class="price">ZMW ${p.price}</div>
+
+<p>${p.description || "No description available"}</p>
+
+<p><strong>Stock:</strong> ${p.stock}</p>
+
+<div class="actions">
+<button class="cart-btn" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+<button class="wish-btn" onclick="addToWishlist(${p.id})">❤️ Wishlist</button>
+</div>
+
+<div class="seller">
+<h3>Seller Info</h3>
+<p><strong>Name:</strong> ${p.seller_name}</p>
+<p><strong>Phone:</strong> ${p.phone || "N/A"}</p>
+<p><strong>Address:</strong> ${p.address || "N/A"}</p>
+</div>
+
+</div>
+
+</div>
+`;
+
+}catch(err){
+document.getElementById("product").innerHTML="Failed to load product";
+}
+}
+
+// ================= ACTIONS =================
+async function addToCart(id){
+try{
+await fetch("/api/cart/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({product_id:id})
+});
+alert("Added to cart");
+}catch{
+alert("Cart failed");
+}
+}
+
+async function addToWishlist(id){
+try{
+await fetch("/api/wishlist/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({product_id:id})
+});
+alert("Added to wishlist");
+}catch{
+alert("Wishlist failed");
+}
+}
+
+// INIT
+loadProduct();
+
+</script>
+
+</body>
+</html>

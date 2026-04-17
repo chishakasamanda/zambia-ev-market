@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+<title>Buyer Entry</title>
+
+<style>
+body{
+margin:0;
+font-family:Segoe UI;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
+flex-direction:column;
+}
+
+button{
+padding:14px 28px;
+margin:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#00ffcc;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Zambia EV Marketplace</h1>
+
+<button onclick="login()">Login</button>
+<button onclick="register()">Register</button>
+
+<script>
+
+function login(){
+window.location.href="login.html";
+}
+
+function register(){
+window.location.href="buyer-register.html";
+}
+
+</script>
+
+</body>
+</html>

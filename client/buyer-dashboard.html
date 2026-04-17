@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+<title>Buyer Dashboard</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #111;
+}
+
+/* NAVBAR (same as homepage) */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+}
+
+.nav h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background: #111;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  overflow: hidden;
+  min-width: 180px;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover {
+  background: #f5f5f5;
+}
+
+.show {
+  display: block;
+}
+
+/* MAP BUTTON */
+.map-btn {
+  background: #16c784;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* FILTER BAR (modern clean) */
+.filters {
+  padding: 20px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.filters input {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  padding: 30px 40px;
+}
+
+/* PRODUCT CARD (matches homepage cards) */
+.card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 18px;
+  padding: 15px;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  position: relative;
+}
+
+/* SMOOTH hover like homepage */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* TITLE */
+.card h3 {
+  margin: 10px 0 5px;
+  font-size: 16px;
+}
+
+/* PRICE */
+.card p {
+  color: #555;
+}
+
+/* BADGE */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4d4d;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+/* BUTTON STYLE (same feel as homepage CTA) */
+.actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+/* CART */
+.actions button:first-child {
+  background: #111;
+  color: white;
+}
+
+/* WISHLIST */
+.actions button:last-child {
+  background: #16c784;
+  color: white;
+}
+
+/* SMOOTH hover */
+.actions button:hover {
+  transform: translateY(-3px);
+}
+
+/* CLICK feel */
+.actions button:active {
+  transform: scale(0.96);
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+<h2 id="welcome">Loading...</h2>
+
+<div class="nav-right">
+
+<!-- PROFILE DROPDOWN -->
+<div class="dropdown">
+<button class="dropbtn" onclick="toggleMenu()">Profile ⬇</button>
+
+<div id="menu" class="dropdown-content">
+<a onclick="goCart()">🛒 View Cart</a>
+<a onclick="goWishlist()">❤️ View Wishlist</a>
+<a onclick="goProfile()">👤 Profile</a>
+<a onclick="logout()">🚪 Logout</a>
+</div>
+</div>
+
+<!-- MAP BUTTON -->
+<button class="map-btn" onclick="goMap()">
+Map
+</button>
+
+</div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+<input id="search" placeholder="Search..." oninput="applyFilters()">
+<input id="min" type="number" placeholder="Min Price" oninput="applyFilters()">
+<input id="max" type="number" placeholder="Max Price" oninput="applyFilters()">
+<label>
+<input type="checkbox" id="stockOnly" onchange="applyFilters()"> In Stock
+</label>
+</div>
+
+<!-- PRODUCTS -->
+<div class="grid" id="products"></div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location="login.html";
+
+let allProducts=[];
+
+// ================= USER =================
+async function loadUser(){
+const res = await fetch("/api/me",{headers:{Authorization:"Bearer "+token}});
+const user = await res.json();
+document.getElementById("welcome").innerText="👋 "+user.name;
+}
+
+// ================= PRODUCTS =================
+async function loadProducts(){
+const res = await fetch("/api/products",{headers:{Authorization:"Bearer "+token}});
+allProducts = await res.json();
+render(allProducts);
+}
+
+// ================= FILTER =================
+function applyFilters(){
+let data=[...allProducts];
+
+const q=document.getElementById("search").value.toLowerCase();
+const min=document.getElementById("min").value;
+const max=document.getElementById("max").value;
+const stock=document.getElementById("stockOnly").checked;
+
+data=data.filter(p =>
+p.name.toLowerCase().includes(q) &&
+(!min || p.price>=min) &&
+(!max || p.price<=max) &&
+(!stock || p.stock>0)
+);
+
+render(data);
+}
+
+// ================= RENDER =================
+function render(data){
+const container = document.getElementById("products");
+container.innerHTML="";
+
+data.forEach(p=>{
+container.innerHTML+=`
+<div class="card" onclick="openProduct(${p.id})">
+
+${p.stock<=0?'<div class="badge">Out</div>':''}
+
+<img src="${p.image_url}">
+
+<h3>${p.name}</h3>
+<p>ZMW ${p.price}</p>
+
+<div class="actions">
+
+<button onclick="event.stopPropagation(); addToCart(${p.id})">
+🛒 Cart
+</button>
+
+<button onclick="event.stopPropagation(); addToWishlist(${p.id})">
+❤️ Wishlist
+</button>
+
+</div>
+
+</div>
+`;
+});
+}
+
+// ================= DROPDOWN =================
+function toggleMenu(){
+const menu = document.getElementById("menu");
+menu.classList.toggle("show");
+}
+
+window.addEventListener("click", function(e){
+if(!e.target.closest(".dropdown")){
+document.getElementById("menu").classList.remove("show");
+}
+});
+
+// ================= ACTIONS =================
+async function addToCart(id){
+await fetch("/api/cart/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({product_id:id})
+});
+alert("Added to cart");
+}
+
+async function addToWishlist(id){
+await fetch("/api/wishlist/add",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({product_id:id})
+});
+alert("Added to wishlist");
+}
+
+// ================= NAV =================
+function openProduct(id){
+window.location="product-view.html?id="+id;
+}
+
+function goCart(){ window.location="cart.html"; }
+function goWishlist(){ window.location="wishlist.html"; }
+function goProfile(){ window.location="buyer-profile.html"; }
+
+function goMap(){
+window.location="map.html";
+}
+
+function logout(){
+localStorage.clear();
+window.location="login.html";
+}
+
+// INIT
+loadUser();
+loadProducts();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>Zambia EV Parts Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ev-green: #16c784;
+    }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f6f8 40%, #eef1f4 100%);
+  color: #111;
+}
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      border-bottom: 1px solid #eee;
+      background: white;
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ev-green);
+    }
+
+    .login-btn {
+      background: black;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    /* HERO */
+    .hero {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #fffefe;
+      max-width: 600px;
+    }
+
+    /* CTA */
+    .cta {
+      margin-top: 25px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .cta button {
+      padding: 14px 24px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .buy {
+      background: black;
+      color: white;
+    }
+
+    .sell {
+      background: var(--ev-green);
+      color: white;
+    }
+
+    .cta button:hover {
+      transform: scale(1.05);
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 60px;
+      background: #fafafa;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid #eee;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 80px 40px;
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .about p {
+      max-width: 700px;
+      margin: 0 auto 40px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .about-card {
+      background: #fafafa;
+      padding: 25px;
+      border-radius: 16px;
+      border: 1px solid #eee;
+      transition: 0.3s;
+    }
+
+    .about-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #eee;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">⚡Zambia EV Market</div>
+    <button class="login-btn" onclick="goLogin()">Login</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Zambia's EV Online Market</h1>
+    <p>Buy and sell EV batteries, chargers, motors, controllers, and components in one trusted platform</p>
+
+    <div class="cta">
+  <button class="buy" onclick="goBuyer()">Browse Parts</button>
+  <button class="sell" onclick="goSeller()">Sign Up</button>
+  <button class="buy" onclick="goLogin()">Login</button>
+</div>
+</div>
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="card">
+      <h3>🔋 EV Parts Focus</h3>
+      <p>Dedicated marketplace for electric vehicle components.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Fast Trading</h3>
+      <p>Quick listing and purchasing system for sellers and buyers.</p>
+    </div>
+
+    <div class="card">
+      <h3>🛠 Repair Support</h3>
+      <p>Help EV owners maintain and upgrade vehicles.</p>
+    </div>
+
+    <div class="card">
+      <h3>📦 Seller Control</h3>
+      <p>Manage your own products and track performance easily.</p>
+    </div>
+  </div>
+
+  <section class="categories">
+  <h2>Browse EV Parts</h2>
+
+  <div class="category-grid">
+
+  
+    <div class="category-card">
+      <img src="Images/battery.jpg">
+      <h3>Chargers</h3>
+    </div>
+
+    <div class="category-card">
+      <img src="Images/motor.jpg">
+      <h3>Motors</h3>
+    </div>
+
+    <div class="category-card">
+      <img src="Images/controller.jpg">
+      <h3>Controllers</h3>
+    </div>
+
+  </div>
+</section>
+
+  <!-- ABOUT -->
+  <div class="about">
+    <h2>About Zambia EV Market</h2>
+
+    <p>
+      We are a specialized marketplace for electric vehicle components — connecting buyers and sellers
+      of EV batteries, charging systems, motors, controllers, and spare parts across Zambia.
+    </p>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>🔋 Focus</h3>
+        <p>Reliable EV components</p>
+      </div>
+
+      <div class="about-card">
+        <h3>⚡ Speed</h3>
+        <p>Fast and simple trading experience.</p>
+      </div>
+
+      <div class="about-card">
+        <h3>🤝 Trust</h3>
+        <p>Reliable sellers and transparent listings.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 Zambia EV Market
+  </div>
+
+  <script>
+  function goLogin() {
+    window.location = "login.html";
+  }
+
+  function goBuyer() {
+    window.location = "login.html"; // user must login first
+  }
+
+  function goSeller() {
+    window.location = "register.html"; // signup page
+  }
+</script>
+
+</body>
+</html>
