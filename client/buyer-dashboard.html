@@ -1,202 +1,445 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
-<title>Buyer Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<title>ZEVL</title>
 
 <style>
+/* 🔥 REPLACE YOUR BODY WITH THIS (LIGHT PREMIUM BACKGROUND) */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.03), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(0,0,0,0.02), transparent 50%),
+    linear-gradient(180deg, #f8f9fb 0%, #f2f4f7 100%);
+
   color: #111;
 }
+/* ADD THIS CSS (MATCH LOGIN LOGO BUT BLACK) */
 
-/* NAVBAR (same as homepage) */
+.logo{
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: #111; /* BLACK */
+}
+
+/* NAV */
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
-  background: white;
-  border-bottom: 1px solid #eee;
+  padding: 18px 40px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
   position: sticky;
   top: 0;
+  z-index: 9999;
 }
 
-.nav h2 {
-  font-size: 18px;
-  font-weight: 600;
+/* LEFT */
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-/* RIGHT SIDE */
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* CENTER LOGO */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* RIGHT */
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* ICON BUTTON */
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background: rgba(0,0,0,0.05);
+  cursor:pointer;
+  transition:0.2s;
+}
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
+/* target the actual SVG inside the button */
+.icon-btn svg {
+  stroke: #111;
+  transition: 0.2s;
+}
+
+/* 🔥 force white icon on hover */
+.icon-btn:hover svg {
+  stroke: white !important;
 }
 
 /* DROPDOWN */
-.dropdown {
-  position: relative;
-}
+.dropdown { position: relative; }
 
 .dropbtn {
-  background: #111;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  cursor: pointer;
+  background:#111;
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:20px;
+  cursor:pointer;
 }
 
 .dropdown-content {
-  display: none;
   position: absolute;
   right: 0;
   top: 45px;
+
   background: white;
   border-radius: 12px;
   border: 1px solid #eee;
-  overflow: hidden;
   min-width: 180px;
-  z-index: 1000;
+  z-index: 10000;
+
+  /* animation setup (like filter) */
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  overflow: hidden;
+
+  pointer-events: none;
+  transition: all 0.25s ease;
 }
 
-.dropdown-content a {
-  display: block;
-  padding: 12px;
-  cursor: pointer;
+/* active state */
+.dropdown-content.show {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 300px;
+  pointer-events: auto;
 }
 
-.dropdown-content a:hover {
-  background: #f5f5f5;
+.dropdown-content a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px;
+  cursor:pointer;
 }
+.dropdown-content a:hover{ background:#f5f5f5; }
 
-.show {
-  display: block;
-}
-
-/* MAP BUTTON */
-.map-btn {
-  background: #16c784;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-/* FILTER BAR (modern clean) */
-.filters {
-  padding: 20px 40px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-}
-
-.filters input {
-  padding: 10px;
+/* SEARCH INPUT */
+.search-hidden {
+  width: 0;
+  opacity: 0;
+  padding: 8px 0;
   border-radius: 20px;
   border: 1px solid #ddd;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
+
+/* active state */
+.search-active {
+  width: 180px;
+  opacity: 1;
+  padding: 8px 14px;
+}
+
+/* FILTER MENU */
+.filter-menu {
+  position: absolute;
+  top: 70px;
+  left: 40px;
+
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+  overflow: hidden;
+
+  /* hidden state */
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+/* active state */
+.show-filter {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 300px;
+  pointer-events: auto;
+}
+.filter-menu p{
+  margin:0;
+  padding:12px 16px;
+  cursor:pointer;
+}
+
 
 /* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
-  padding: 30px 40px;
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap:20px;
+  padding:30px 40px;
 }
 
-/* PRODUCT CARD (matches homepage cards) */
-.card {
-  background: rgba(255,255,255,0.8);
-  border-radius: 18px;
-  padding: 15px;
-  border: 1px solid rgba(0,0,0,0.06);
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
-  cursor: pointer;
-  position: relative;
+.card{
+  background:rgba(255,255,255,0.9);
+  border-radius:18px;
+  padding:15px;
+  border:1px solid rgba(0,0,0,0.06);
+
+  box-sizing:border-box;
+
+  /* ✅ FIX: prevents stretching during search */
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+
+  height:320px;   /* 🔒 fixed uniform height */
+  overflow:hidden;
 }
 
-/* SMOOTH hover like homepage */
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+.card img{
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* IMAGE */
-.card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 12px;
+.img-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio: 4 / 3;
+  overflow:hidden;
+  border-radius:12px;
+}
+.img-wrap img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+filter: contrast(1.05) saturate(1.05);
+  flex-shrink:0;
+}
+/* ICON OVERLAY */
+/* 🔥 CLEAN PREMIUM ICON BUTTONS (RIVIAN STYLE) */
+.icon-overlay {
+  position:absolute;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:38px;
+  height:38px;
+
+  border-radius:50%;
+  border: 1px solid rgba(0,0,0,0.06);
+
+  background: rgba(255,255,255,0.9);  /* 🔥 brighter base */
+  backdrop-filter: blur(4px);
+
+  cursor:pointer;
+  stroke: #111;
+  transition: 0.2s;
 }
 
-/* TITLE */
-.card h3 {
-  margin: 10px 0 5px;
-  font-size: 16px;
+/* hover EXACTLY like nav buttons */
+.icon-overlay:hover{
+  background:#111;
+  color: #fff;
+}
+.icon-overlay svg {
+  stroke: #111;
+  transition: 0.2s;
 }
 
-/* PRICE */
-.card p {
-  color: #555;
+.icon-overlay:hover svg {
+  stroke: #fff !important;
 }
+.top-right{ top:10px; right:10px; }
+.bottom-right{ bottom:10px; right:10px; }
 
-/* BADGE */
-.badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #ff4d4d;
+/* TEXT */
+.card h3{ margin:10px 0 5px; font-size:16px; }
+.card p{ color:#555; }
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap:20px;
+  padding:30px 40px;
+  
+  position: relative;
+
+  /* ✅ keeps layout stable during filtering */
+  align-items:start;
+}
+/* TOAST NOTIFICATION */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(10px);
+
   color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-}
 
-/* ACTION BUTTONS */
-.actions {
-  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: 14px;
+
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.25s ease;
+
+  z-index: 99999;
 }
 
-/* BUTTON STYLE (same feel as homepage CTA) */
-.actions button {
-  flex: 1;
-  padding: 8px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s ease;
+/* show state */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* CART */
-.actions button:first-child {
-  background: #111;
-  color: white;
+/* success accent */
+.toast.success {
+  border-left: 3px solid #16c784;
 }
 
-/* WISHLIST */
-.actions button:last-child {
-  background: #16c784;
-  color: white;
+/* icon */
+.toast i {
+  width: 18px;
+  height: 18px;
+  stroke: #16c784;
+}
+.category-nav{
+  width:100%;
+  display:flex;
+  justify-content:center;
+ background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.category-inner{
+  color:#666;
+  display:flex;
+  gap:28px;
+  padding:12px 0;
+  font-weight:500;
+  font-size:14px;
 }
 
-/* SMOOTH hover */
-.actions button:hover {
-  transform: translateY(-3px);
+.category-inner div{
+  cursor:pointer;
+  position:relative;
+  padding:6px 2px;
+  transition:0.2s;
+  color:#444;
 }
 
-/* CLICK feel */
-.actions button:active {
-  transform: scale(0.96);
+/* hover like Littlebox underline effect */
+.category-inner div::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:0%;
+  height:2px;
+  background:#16c784;
+  transition:0.2s;
+}
+
+.category-inner div:hover{
+  color:#111;
+}
+
+.category-inner div:hover::after{
+  width:100%;
+}
+/* BASE CARD */
+.product-card{
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(8px);
+  border-radius:18px;
+  padding:15px;
+  border: 1px solid rgba(0,0,0,0.05);
+
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+
+  min-height:320px; /* ✅ use this */
+
+  cursor:pointer;
+
+  transition: all 0.35s ease; /* ✅ ONE transition only */
+
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* HIDDEN */
+.product-card.hide{
+  opacity: 0;
+  transform: scale(0.92) translateY(12px);
+  pointer-events: none;
+}
+
+/* VISIBLE */
+.product-card.show{
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+
+.product-card:hover{
+  transform: translateY(-6px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 0 0 1px rgba(0,0,0,0.04);
+}
+.icon-btn svg {
+  stroke: #111;
+}
+
+.icon-btn:hover svg {
+  stroke: #fff !important;
 }
 </style>
 </head>
@@ -205,42 +448,80 @@ body {
 
 <!-- NAV -->
 <div class="nav">
-<h2 id="welcome">Loading...</h2>
 
+<!-- LEFT -->
+<div class="nav-left">
+
+<button class="icon-btn" onclick="toggleSearch()" title="Search">
+<i data-lucide="search"></i>
+</button>
+
+<input id="searchInput" class="search-hidden" placeholder="Search..." oninput="applyFilters()">
+
+<button class="icon-btn" onclick="toggleFilter()" title="Filter">
+<i data-lucide="sliders-horizontal"></i>
+</button>
+
+<div id="filterMenu" class="filter-menu">
+<p onclick="setFilter('low')">Price: Low → High</p>
+<p onclick="setFilter('high')">Price: High → Low</p>
+<p onclick="setFilter('stock')">In Stock Only</p>
+<p onclick="setFilter('all')">Clear</p>
+</div>
+
+</div>
+
+<!-- CENTER -->
+<!-- REPLACE YOUR NAV-CENTER WITH THIS -->
+
+<div class="nav-center logo">
+  ZEVL
+</div>
+
+<!-- RIGHT -->
 <div class="nav-right">
 
-<!-- PROFILE DROPDOWN -->
 <div class="dropdown">
-<button class="dropbtn" onclick="toggleMenu()">Profile ⬇</button>
+<button class="dropbtn" onclick="toggleMenu()">Menu</button>
 
 <div id="menu" class="dropdown-content">
-<a onclick="goCart()">🛒 View Cart</a>
-<a onclick="goWishlist()">❤️ View Wishlist</a>
-<a onclick="goProfile()">👤 Profile</a>
-<a onclick="logout()">🚪 Logout</a>
+<a onclick="goCart()"><i data-lucide="shopping-cart"></i> Cart</a>
+<a onclick="goWishlist()"><i data-lucide="heart"></i> Wishlist</a>
+<a onclick="goChats()"><i data-lucide="message-circle"></i> Chats</a>
+<a onclick="goProfile()"><i data-lucide="user"></i> Profile</a>
+<a onclick="logout()"><i data-lucide="log-out"></i> Logout</a>
 </div>
 </div>
 
-<!-- MAP BUTTON -->
-<button class="map-btn" onclick="goMap()">
-Map
+<button class="icon-btn" onclick="goMap()" title="Map">
+<i data-lucide="map"></i>
+</button>
+
+<button class="icon-btn" onclick="goCommunity()" title="Community">
+<i data-lucide="globe"></i>
 </button>
 
 </div>
+
 </div>
 
-<!-- FILTERS -->
-<div class="filters">
-<input id="search" placeholder="Search..." oninput="applyFilters()">
-<input id="min" type="number" placeholder="Min Price" oninput="applyFilters()">
-<input id="max" type="number" placeholder="Max Price" oninput="applyFilters()">
-<label>
-<input type="checkbox" id="stockOnly" onchange="applyFilters()"> In Stock
-</label>
+<!-- 👇 ADD THIS RIGHT BELOW NAV -->
+<div class="category-nav">
+  <div class="category-inner">
+
+    <div onclick="filterCategory('all')">All</div>
+    <div onclick="filterCategory('battery')">Battery</div>
+    <div onclick="filterCategory('charging')">Charging</div>
+    <div onclick="filterCategory('drivetrain')">Drivetrain</div>
+    <div onclick="filterCategory('electronics')">Electronics</div>
+    <div onclick="filterCategory('mechanical')">Mechanical</div>
+
+  </div>
 </div>
 
 <!-- PRODUCTS -->
 <div class="grid" id="products"></div>
+
 
 <script>
 
@@ -248,133 +529,174 @@ const token = localStorage.getItem("token");
 if(!token) window.location="login.html";
 
 let allProducts=[];
+let currentFilter="all";
 
-// ================= USER =================
-async function loadUser(){
-const res = await fetch("/api/me",{headers:{Authorization:"Bearer "+token}});
-const user = await res.json();
-document.getElementById("welcome").innerText="👋 "+user.name;
-}
-
-// ================= PRODUCTS =================
+/* PRODUCTS */
 async function loadProducts(){
-const res = await fetch("/api/products",{headers:{Authorization:"Bearer "+token}});
-allProducts = await res.json();
+const res=await fetch("/api/products",{headers:{Authorization:"Bearer "+token}});
+allProducts=await res.json();
 render(allProducts);
 }
 
-// ================= FILTER =================
+/* FILTER */
 function applyFilters(){
-let data=[...allProducts];
+  const q = document.getElementById("searchInput").value.toLowerCase();
 
-const q=document.getElementById("search").value.toLowerCase();
-const min=document.getElementById("min").value;
-const max=document.getElementById("max").value;
-const stock=document.getElementById("stockOnly").checked;
+  let filtered = [...allProducts];
 
-data=data.filter(p =>
-p.name.toLowerCase().includes(q) &&
-(!min || p.price>=min) &&
-(!max || p.price<=max) &&
-(!stock || p.stock>0)
-);
+  // 🔍 SEARCH
+  if(q){
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(q)
+    );
+  }
 
-render(data);
+  // 💰 PRICE FILTER
+  if(currentFilter === "low"){
+    filtered.sort((a,b) => a.price - b.price);
+  }
+
+  if(currentFilter === "high"){
+    filtered.sort((a,b) => b.price - a.price);
+  }
+
+  // 📦 STOCK FILTER
+  if(currentFilter === "stock"){
+    filtered = filtered.filter(p => p.stock > 0);
+  }
+
+  render(filtered);
 }
-
-// ================= RENDER =================
+/* RENDER */
 function render(data){
-const container = document.getElementById("products");
-container.innerHTML="";
+  const container = document.getElementById("products");
+  container.innerHTML = "";
 
-data.forEach(p=>{
-container.innerHTML+=`
-<div class="card" onclick="openProduct(${p.id})">
+  data.forEach((p, index) => {
+    const div = document.createElement("div");
 
-${p.stock<=0?'<div class="badge">Out</div>':''}
+    // 🔴 START HIDDEN
+  div.className = "product-card hide";
+div.setAttribute("data-category", p.category);
 
-<img src="${p.image_url}">
+    div.innerHTML = `
+      <div class="img-wrap">
+        <img src="${p.image_url || '/Images/placeholder.jpg'}">
 
-<h3>${p.name}</h3>
-<p>ZMW ${p.price}</p>
+        <button class="icon-overlay top-right" onclick="event.stopPropagation(); addToWishlist(${p.id})">
+          <i data-lucide="heart"></i>
+        </button>
 
-<div class="actions">
+        <button class="icon-overlay bottom-right" onclick="event.stopPropagation(); addToCart(${p.id})">
+          <i data-lucide="shopping-cart"></i>
+        </button>
+      </div>
 
-<button onclick="event.stopPropagation(); addToCart(${p.id})">
-🛒 Cart
-</button>
+      <h3>${p.name}</h3>
+      <p>ZMW ${p.price}</p>
+    `;
 
-<button onclick="event.stopPropagation(); addToWishlist(${p.id})">
-❤️ Wishlist
-</button>
+    container.appendChild(div);
 
-</div>
+    // 🟢 TRIGGER ANIMATION AFTER INSERT
+    setTimeout(() => {
+      div.classList.remove("hide");
+      div.classList.add("show");
+    }, index * 20); // stagger
+  });
 
-</div>
-`;
-});
+  lucide.createIcons();
 }
 
-// ================= DROPDOWN =================
-function toggleMenu(){
-const menu = document.getElementById("menu");
-menu.classList.toggle("show");
+/* UI */
+function toggleSearch(){
+  document.getElementById("searchInput").classList.toggle("search-active");
+}
+function toggleFilter(){
+document.getElementById("filterMenu").classList.toggle("show-filter");
+}
+function setFilter(type){
+currentFilter=type;
+applyFilters();
+document.getElementById("filterMenu").classList.remove("show-filter");
 }
 
-window.addEventListener("click", function(e){
-if(!e.target.closest(".dropdown")){
-document.getElementById("menu").classList.remove("show");
-}
-});
-
-// ================= ACTIONS =================
+/* ACTIONS */
 async function addToCart(id){
-await fetch("/api/cart/add",{
-method:"POST",
-headers:{
+await fetch("/api/cart/add",{method:"POST",headers:{
 "Content-Type":"application/json",
 Authorization:"Bearer "+token
-},
-body:JSON.stringify({product_id:id})
-});
-alert("Added to cart");
+},body:JSON.stringify({product_id:id})});
+showToast("Added to cart successfully");
 }
 
 async function addToWishlist(id){
-await fetch("/api/wishlist/add",{
-method:"POST",
-headers:{
+await fetch("/api/wishlist/add",{method:"POST",headers:{
 "Content-Type":"application/json",
 Authorization:"Bearer "+token
-},
-body:JSON.stringify({product_id:id})
-});
-alert("Added to wishlist");
+},body:JSON.stringify({product_id:id})});
+showToast("Saved to wishlist");
 }
 
-// ================= NAV =================
-function openProduct(id){
-window.location="product-view.html?id="+id;
-}
+function showToast(message, type="success") {
+  const toast = document.getElementById("toast");
 
+  toast.className = "toast show " + type;
+  toast.innerHTML = `<i data-lucide="check-circle"></i> ${message}`;
+
+  lucide.createIcons();
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
+}
+/* NAV */
+function openProduct(id){ window.location="product-view.html?id="+id; }
 function goCart(){ window.location="cart.html"; }
 function goWishlist(){ window.location="wishlist.html"; }
 function goProfile(){ window.location="buyer-profile.html"; }
-
-function goMap(){
-window.location="map.html";
-}
+function goMap(){ window.location="map.html"; }
+function goCommunity(){ window.location="community.html"; }
 
 function logout(){
 localStorage.clear();
 window.location="login.html";
 }
 
-// INIT
-loadUser();
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("show");
+}
+
+window.addEventListener("click",function(e){
+if(!e.target.closest(".dropdown")){
+document.getElementById("menu").classList.remove("show");
+}
+});
+
+function filterCategory(cat){
+  if(cat === "all"){
+    render(allProducts);
+    return;
+  }
+
+  const filtered = allProducts.filter(
+    p => p.category && p.category.toLowerCase() === cat.toLowerCase()
+  );
+
+  render(filtered);
+}
+
+function goChats(){
+  window.location = "buyer-chats.html";
+}
+
+/* INIT */
 loadProducts();
+lucide.createIcons();
 
 </script>
+
+<div id="toast" class="toast"></div>
 
 </body>
 </html>

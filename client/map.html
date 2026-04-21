@@ -2,48 +2,301 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 <title>Charging Stations</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-body{margin:0;}
-#map{height:100vh;}
+:root{
+  --ev-green:#16c784;
+  --ev-blue:#3aa0ff;
+  --bg:#0b1220;
+}
+
+
+/* PAGE */
+body{
+  margin:0;
+  font-family:Inter, sans-serif;
+  overflow:hidden;
+  background:var(--bg);
+}
+.nav{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 40px;
+
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(12px);
+
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.nav-left, .nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* EXACT SAME LOGO STYLE */
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:0.5px;
+  color:white;
+}
+
+/* SAME BUTTON STYLE AS CART */
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.12);
+  cursor:pointer;
+  transition:0.2s;
+  color:white;
+}
+
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
+
+/* MAP */
+#map{
+  height:100vh;
+  width:100%;
+  filter:saturate(1.1) contrast(1.05);
+}
+
+/* TOP BAR */
+.topbar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:14px 22px;
+
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,0.65),
+    rgba(22,199,132,0.15),
+    rgba(58,160,255,0.12)
+  );
+
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  color:white;
+}
+
+/* TITLE */
+.topbar h2{
+  margin:0;
+  font-size:16px;
+  letter-spacing:1px;
+}
+
+/* STATUS CHIP */
+.status{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:rgba(22,199,132,0.15);
+  border:1px solid rgba(22,199,132,0.4);
+  color:#bfffe7;
+}
+
+/* FLOAT PANEL */
+.panel{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  z-index:1000;
+
+  width:240px;
+
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(14px);
+
+  border-radius:16px;
+  padding:14px;
+
+  color:white;
+}
+
+.panel h3{
+  margin:0 0 8px 0;
+  font-size:13px;
+}
+
+.panel p{
+  margin:0;
+  font-size:12px;
+  opacity:0.8;
+}
+
+/* LEAFLET POPUP CUSTOM */
+.leaflet-popup-content-wrapper{
+  background:rgba(15,20,35,0.95);
+  color:white;
+  border-radius:12px;
+}
+
+.leaflet-popup-tip{
+  background:rgba(15,20,35,0.95);
+}
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom{
+  z-index:400 !important;
+}
+/* MARKER ANIMATION (pulse effect via CSS) */
+.pulse{
+  width:14px;
+  height:14px;
+  background:var(--ev-green);
+  border-radius:50%;
+  box-shadow:0 0 0 rgba(22,199,132,0.6);
+  animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(22,199,132,0.6);}
+  70%{box-shadow:0 0 0 18px rgba(22,199,132,0);}
+  100%{box-shadow:0 0 0 0 rgba(22,199,132,0);}
+}
+.directions-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:6px;
+
+  padding:8px 12px;
+  border-radius:10px;
+
+  background:linear-gradient(135deg,#16c784,#3aa0ff);
+  color:white;
+
+  font-size:12px;
+  font-weight:600;
+  text-decoration:none;
+
+  box-shadow:0 8px 20px rgba(22,199,132,0.25);
+
+  transition:0.25s ease;
+}
+
+.directions-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 25px rgba(22,199,132,0.35);
+}
 </style>
 
 </head>
 
 <body>
+<div class="nav">
+
+  <div class="nav-left">
+    <button class="icon-btn" onclick="back()" title="Back">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
+
+  <div class="nav-center">
+    ZEVL ⚡
+  </div>
+
+  <div class="nav-right"></div>
+
+</div>
 
 <div id="map"></div>
+
+<div class="panel">
+  <h3>Network Overview</h3>
+  <p>Real-time EV charging locations across Zambia.</p>
+</div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-
 const map = L.map('map').setView([-13.1339,27.8493],6);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:''
+}).addTo(map);
 
 async function load(){
 try{
+  const res = await fetch("/api/stations");
+  const data = await res.json();
 
-const res = await fetch("/api/stations"); // ✅ FIXED (no localhost)
-const data = await res.json();
+  data.forEach(s=>{
 
-data.forEach(s=>{
-  L.marker([s.latitude,s.longitude])
-  .addTo(map)
-  .bindPopup(`<b>${s.name}</b><br>${s.description}`);
-});
+    const icon = L.divIcon({
+      className: '',
+      html: '<div class="pulse"></div>',
+      iconSize: [14,14]
+    });
+
+    L.marker([s.latitude, s.longitude], {icon})
+.addTo(map)
+.bindPopup(`
+  <div style="font-family:Inter,sans-serif; min-width:180px">
+
+    <div style="font-weight:700; font-size:14px; margin-bottom:4px;">
+      ${s.name}
+    </div>
+
+    <div style="font-size:12px; opacity:0.8; margin-bottom:10px;">
+      ${s.description}
+    </div>
+
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${s.latitude},${s.longitude}"
+       target="_blank"
+       class="directions-btn">
+       
+       ⚡ Get Directions
+    </a>
+
+  </div>
+`);
+  });
 
 }catch(err){
-alert("Failed to load stations");
+  alert("Failed to load stations");
 }
+}
+function back(){
+  window.history.back();
 }
 
 load();
-
+lucide.createIcons();
 </script>
 
 </body>

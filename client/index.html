@@ -2,22 +2,39 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
-  <title>Zambia EV Parts Marketplace</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <title>Zambia's EV Landscape</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --ev-green: #16c784;
     }
 
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(180deg, #ffffff 0%, #f4f6f8 40%, #eef1f4 100%);
-  color: #111;
+body{
+  margin:0;
+  font-family: 'Inter', sans-serif;
+  padding-top:0; /* prevents overlap with fixed navbar */
+background:
+  radial-gradient(circle at 20% 20%, rgba(120,80,255,0.08), transparent 40%),
+  radial-gradient(circle at 80% 30%, rgba(0,200,255,0.06), transparent 45%),
+  linear-gradient(180deg, #0f1115 0%, #141821 40%, #1a1f2b 100%);
+  color:#111;
 }
+h1, h2 {
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: -0.5px;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+}
+
     /* NAVBAR */
     .navbar {
       display: flex;
@@ -29,12 +46,70 @@ body {
       position: sticky;
       top: 0;
     }
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 30px;
 
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--ev-green);
-    }
+  background: transparent; /* key change */
+  border-bottom: none;
+
+  position: absolute; /* makes it float over hero */
+  top: 10px;
+  left: 0;
+  width: 100%;
+
+  z-index: 9999;
+}
+
+/* LEFT */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* CENTER LOGO (FIXED but still centered) */
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-weight:700;
+  letter-spacing:0.5px;
+  color: rgb(255, 255, 255);
+  top: 50%;
+}
+
+/* RIGHT ICONS */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10000; /* IMPORTANT FIX */
+}
+
+/* ICON BUTTON */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: rgb(255, 255, 255);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  background: white;
+  color: black;
+}
+
 
     .login-btn {
       background: black;
@@ -47,25 +122,98 @@ body {
 
     /* HERO */
     .hero {
-      height: 80vh;
+     padding-top: 60px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 20px;
+      position: relative;   /* ✅ add this */
+      overflow: hidden;  
     }
+    .hero * {
+  position: relative;
+  z-index: 2;
+}
+  .hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
 
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
+.hero-bg img {
+  position: absolute;
+  top: 0;
+  left: 0;
 
-    .hero p {
-      font-size: 18px;
-      color: #fffefe;
-      max-width: 600px;
-    }
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+
+  filter: brightness(0.9) contrast(1.05);
+}
+
+.hero-bg img.active {
+  opacity: 1;
+}
+
+.hero h1 {
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -1px;
+margin-top: 60px;
+margin-bottom: 10px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+ .hero p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  margin-top: 0;
+line-height: 1.5;
+
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.45) 0%,
+    rgba(0,0,0,0.15) 40%,
+    rgba(0,0,0,0.5) 100%
+  );
+
+  z-index: 1;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 300px; /* taller fade */
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0%,
+    rgba(15,17,21,0.4) 40%,
+    rgba(15,17,21,0.75) 70%,
+    #0f1115 100%
+  );
+
+  z-index: 1;
+}
 
     /* CTA */
     .cta {
@@ -80,55 +228,215 @@ body {
       border: none;
       cursor: pointer;
       font-weight: bold;
-      transition: 0.3s;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
+  .btn-primary {
+  padding: 14px 26px;
+  border-radius: 30px;
 
-    .buy {
-      background: black;
-      color: white;
-    }
+  background: white;
+  color: black;
 
-    .sell {
-      background: var(--ev-green);
-      color: white;
-    }
+  border: none;
 
-    .cta button:hover {
-      transform: scale(1.05);
-    }
+  font-weight: 500;
+  letter-spacing: 0.3px;
 
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  backdrop-filter: blur(6px);
+}
+
+.btn-primary:hover {
+  background: black;
+  color: white;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+.btn-outline {
+  background: rgba(0,0,0,0.3); /* ADD THIS */
+  color: white;
+
+  border: 1px solid rgba(255,255,255,0.6);
+
+  backdrop-filter: blur(8px);
+}
+
+.btn-outline:hover {
+  background: white;
+  color: black;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+  .cta button:hover {
+  transform: translateY(-2px);
+}
+.categories {
+    position: relative;
+  z-index: 2;
+   margin-top: -60px; 
+   margin-bottom: -20px;  /* pulls it closer to features */
+  padding: 60px 80px 80px;
+  background: transparent;
+}
+
+.categories h2 {
+  color: rgba(255,255,255,0.9);
+}
+
+.category-card:first-child {
+  grid-row: span 2;
+  min-height: 460px;
+}
+
+.category-card img {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  display: block;
+
+  transform: scale(1.02);
+  transition: transform 0.5s ease;
+
+  backface-visibility: hidden;
+}
+
+.category-card:hover img {
+  transform: scale(1.08);
+}
+
+/* REMOVE WHITE LINE + ADD CLEAN OVERLAY */
+.category-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.1) 0%,
+    rgba(0,0,0,0.55) 60%,
+    rgba(0,0,0,0.85) 100%
+  );
+
+  z-index: 1;
+}
+
+/* EV GLOW EFFECT */
+.category-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: radial-gradient(circle at center, rgba(22,199,132,0.25), transparent 60%);
+  opacity: 0;
+
+  transition: opacity 0.4s ease;
+  z-index: 2;
+}
+
+.category-card:hover::before {
+  opacity: 1;
+}
+
+.category-card h3 {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+
+  z-index: 3;
+  color: white;
+
+  transition: text-shadow 0.3s ease;
+}
+
+.category-card:hover h3 {
+  text-shadow: 0 0 12px rgba(22,199,132,0.8);
+}
     /* FEATURES */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 60px;
-      background: #fafafa;
-    }
+  .features {
+  position: relative;
+  margin-top: -60px; /* deeper overlap */
+  padding-top: 140px; /* prevents content being cut */
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      border: 1px solid #eee;
-      transition: 0.3s;
-    }
+   mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 20%,
+    black 100%
+  );
+  background: transparent;
+  z-index: 2;
+}
 
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-    }
 
+.card {
+  background: rgba(255,255,255,0.035);
+  backdrop-filter: blur(6px);
+
+  border-radius: 18px;
+  padding: 26px;
+
+  border: 1px solid rgba(255,255,255,0.05);
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+
+  transition:
+    transform 0.35s cubic-bezier(.2,.8,.2,1),
+    box-shadow 0.35s ease,
+    border-color 0.25s ease;
+
+  will-change: transform;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.55);
+
+  border-color: rgba(22,199,132,0.25);
+}
+.card,
+.product-card,
+.product-hero,
+.about-card {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
     .card h3 {
       margin-bottom: 10px;
     }
 
     /* ABOUT */
-    .about {
-      padding: 80px 40px;
-      text-align: center;
-    }
+.about {
+   margin-top: -60px;
+  padding: 60px 40px 80px;
+  text-align: center;
 
+  background: transparent;
+
+  color: #e6e6e6;
+}
+.about::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(22,199,132,0.08), transparent 70%);
+  pointer-events: none;
+}
     .about h2 {
       font-size: 32px;
       margin-bottom: 15px;
@@ -146,103 +454,511 @@ body {
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
     }
+    .about-card{
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
 
-    .about-card {
-      background: #fafafa;
-      padding: 25px;
-      border-radius: 16px;
-      border: 1px solid #eee;
-      transition: 0.3s;
-    }
+.about-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.12),
+    0 0 30px rgba(22,199,132,0.25);
+}
 
-    .about-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-    }
+.final-cta{
+  text-align:center;
+  padding:80px 20px;
+  background: linear-gradient(145deg, #111, #1a1a1a);
+  color:white;
+}
 
-    /* FOOTER */
-    .footer {
-      text-align: center;
-      padding: 20px;
-      border-top: 1px solid #eee;
-      color: #777;
-    }
+.final-cta button:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.final-cta button:active{
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+.about-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 12px rgba(22,199,132,0.35);
+}
+.social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  transition: 0.2s;
+}
+
+.social-btn:hover {
+  background: #111;
+  color: white;
+  transform: translateY(-3px);
+}
+
+.social-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.social-btn img {
+  width: 18px;
+  height: 18px;
+  filter: invert(0); /* keeps dark on light bg */
+}
+
+.social-btn:hover img {
+  filter: invert(1); /* becomes white on hover */
+}
+.card,
+.category-card,
+.about-card {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.card-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(22,199,132,0.08);
+
+  margin-bottom: 14px;
+}
+
+.card-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #1b8d5f;
+}
+.card h3 {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+.features,
+.category-grid,
+.about-grid {
+  transform: translateZ(0);
+}
+.features {
+  padding: 100px 80px;
+}
+.products-header{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.products-header h2{
+  color:white;
+  font-size:34px;
+}
+
+.products-header p{
+  color:rgba(255,255,255,0.6);
+  font-size:15px;
+  margin-top:6px;
+}
+
+/* LAYOUT */
+.product-showcase{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:20px;
+}
+
+/* HERO CARD */
+.product-hero{
+  position:relative;
+  border-radius:22px;
+  overflow:hidden;
+  height:520px;
+}
+
+.product-hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition: transform 0.6s ease;
+}
+
+.product-hero:hover img{
+  transform: scale(1.08);
+}
+
+/* SIDE STACK */
+.product-side{
+  display:grid;
+  grid-template-rows: 1fr 1fr;
+  gap:20px;
+}
+
+.product-card{
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  height:250px;
+}
+
+.product-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover img{
+  transform: scale(1.08);
+}
+
+/* OVERLAY */
+.product-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:20px;
+
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.4) 50%,
+    transparent 100%
+  );
+
+  color:white;
+}
+
+.product-overlay h3{
+  font-size:20px;
+  margin-bottom:4px;
+}
+
+.product-overlay p{
+  font-size:13px;
+  opacity:0.75;
+}
+
+/* BUTTON */
+.product-overlay button{
+  margin-top:12px;
+  align-self:flex-start;
+
+  padding:10px 18px;
+  border-radius:20px;
+  border:none;
+
+  background:white;
+  color:black;
+
+  cursor:pointer;
+  font-size:13px;
+
+  transition: all 0.25s ease;
+}
+
+.product-overlay button:hover{
+  background:black;
+  color:white;
+  transform: translateY(-2px);
+}
+
+/* GLOW HOVER */
+.product-hero::after,
+.product-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle, rgba(22,199,132,0.25), transparent 70%);
+  opacity:0;
+  transition:0.4s;
+}
+
+.product-hero:hover::after,
+.product-card:hover::after{
+  opacity:1;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .product-showcase{
+    grid-template-columns:1fr;
+  }
+
+  .product-hero{
+    height:400px;
+  }
+
+  .product-card{
+    height:220px;
+  }
+}
+/* SMOOTH FADE + LIFT ON LOAD */
+.product-hero,
+.product-card{
+  opacity:0;
+  transform: translateY(40px) scale(0.98);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(.2,.8,.2,1);
+}
+
+.product-hero.show,
+.product-card.show{
+  opacity:1;
+  transform: translateY(0) scale(1);
+}
+
+/* STAGGER EFFECT */
+.product-card:nth-child(1){ transition-delay: 0.15s; }
+.product-card:nth-child(2){ transition-delay: 0.3s; }
+
+/* PARALLAX ZOOM (RIVIAN STYLE) */
+.product-hero img,
+.product-card img{
+  will-change: transform;
+  transform: translateZ(0) scale(1.05);
+}
+
+.product-hero:hover img{
+  transform: scale(1.08) translateY(-4px);
+}
+
+.product-card:hover img{
+  transform: scale(1.08) translateY(-4px);
+}
+
+/* TEXT REVEAL */
+.product-overlay h3,
+.product-overlay p,
+.product-overlay button{
+  transform: translateY(20px);
+  opacity:0;
+  transition: all 0.5s ease;
+}
+
+.product-hero:hover h3,
+.product-card:hover h3{
+  transform: translateY(0);
+  opacity:1;
+}
+
+.product-hero:hover p,
+.product-card:hover p{
+  transform: translateY(0);
+  opacity:1;
+  transition-delay:0.1s;
+}
+
+.product-hero:hover button{
+  transform: translateY(0);
+  opacity:1;
+  transition-delay:0.2s;
+}
+
+/* LIGHT SWEEP EFFECT */
+.product-hero::before,
+.product-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-120%;
+  width:60%;
+  height:100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.25),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+}
+
+.product-hero:hover::before,
+.product-card:hover::before{
+  animation: sweep 1s ease forwards;
+}
+
+@keyframes sweep{
+  to{
+    left:130%;
+  }
+}
+
+/* SOFT FLOATING FEEL */
+.product-hero:hover,
+.product-card:hover{
+  transform: translateY(-6px) scale(1.01);
+}
+/* INITIAL STATE */
+.about-card{
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(.2,.8,.2,1);
+}
   </style>
 </head>
 
 <body>
 
   <!-- NAVBAR -->
-  <div class="navbar">
-    <div class="logo">⚡Zambia EV Market</div>
-    <button class="login-btn" onclick="goLogin()">Login</button>
+<div class="nav">
+
+  <div class="nav-left"></div>
+
+ <div class="nav-center logo">
+  ZEVL
+</div>
+
+  <div class="nav-right">
+
+    <button class="icon-btn" onclick="goMap()" title="Map">
+      <i data-lucide="map"></i>
+    </button>
+
+    <button class="icon-btn" onclick="goCommunity()" title="Community">
+      <i data-lucide="globe"></i>
+    </button>
+
   </div>
+
+</div>
 
   <!-- HERO -->
   <div class="hero">
-    <h1>Zambia's EV Online Market</h1>
-    <p>Buy and sell EV batteries, chargers, motors, controllers, and components in one trusted platform</p>
 
-    <div class="cta">
-  <button class="buy" onclick="goBuyer()">Browse Parts</button>
-  <button class="sell" onclick="goSeller()">Sign Up</button>
-  <button class="buy" onclick="goLogin()">Login</button>
+    <div class="hero-bg">
+  <img src="Images/display.jpg" class="active">
+  <img src="Images/blue-display.png">
+  <img src="Images/pink-display.png">
+</div>
+
+<h1>Powering Zambia’s Electric Future</h1>
+
+<p>
+A trusted EV marketplace and community where innovators, mechanics, and everyday drivers come together to share, trade, and build the future of sustainable mobility in Zambia.
+</p>
+
+
+<div class="cta">
+  <button class="btn-primary" onclick="goSeller()">Sign Up</button>
+  <button class="btn-outline" onclick="goLogin()">Login</button>
 </div>
 </div>
   <!-- FEATURES -->
   <div class="features">
     <div class="card">
-      <h3>🔋 EV Parts Focus</h3>
-      <p>Dedicated marketplace for electric vehicle components.</p>
-    </div>
-
-    <div class="card">
-      <h3>⚡ Fast Trading</h3>
-      <p>Quick listing and purchasing system for sellers and buyers.</p>
-    </div>
-
-    <div class="card">
-      <h3>🛠 Repair Support</h3>
-      <p>Help EV owners maintain and upgrade vehicles.</p>
-    </div>
-
-    <div class="card">
-      <h3>📦 Seller Control</h3>
-      <p>Manage your own products and track performance easily.</p>
-    </div>
+  <div class="card-icon">
+    <i data-lucide="battery"></i>
   </div>
+  <h3>EV Parts Focus</h3>
+  <p>Dedicated marketplace for electric vehicle components.</p>
+</div>
+
+<div class="card">
+  <div class="card-icon">
+    <i data-lucide="zap"></i>
+  </div>
+  <h3>Fast Trading</h3>
+  <p>Quick listing and purchasing system for sellers and buyers.</p>
+</div>
+
+<div class="card">
+  <div class="card-icon">
+    <i data-lucide="wrench"></i>
+  </div>
+  <h3>Repair Support</h3>
+  <p>Help EV owners maintain and upgrade vehicles.</p>
+</div>
+
+<div class="card">
+  <div class="card-icon">
+    <i data-lucide="package"></i>
+  </div>
+  <h3>Seller Control</h3>
+  <p>Manage your own products and track performance easily.</p>
+</div>
+</div>
 
   <section class="categories">
-  <h2>Browse EV Parts</h2>
 
-  <div class="category-grid">
+  <div class="products-header">
+    <h2>Main EV Products</h2>
+    <p>Explore high-performance EV components built for power, efficiency, and scale.</p>
+  </div>
 
-  
-    <div class="category-card">
-      <img src="Images/battery.jpg">
-      <h3>Chargers</h3>
+  <div class="product-showcase">
+
+    <!-- LARGE HERO CARD -->
+    <div class="product-hero">
+      <img src="Images/charger (1).jpg">
+      <div class="product-overlay">
+        <h3>High-Voltage Battery Packs</h3>
+        <p>Long-range, high-efficiency energy systems</p>
+        <button>Explore</button>
+      </div>
     </div>
 
-    <div class="category-card">
-      <img src="Images/motor.jpg">
-      <h3>Motors</h3>
-    </div>
+    <!-- SIDE STACK -->
+    <div class="product-side">
 
-    <div class="category-card">
-      <img src="Images/controller.jpg">
-      <h3>Controllers</h3>
+      <div class="product-card">
+        <img src="Images/motor.jpg">
+        <div class="product-overlay">
+          <h3>EV Drive Units</h3>
+          <p>High torque performance motors</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="Images/product1.png">
+        <div class="product-overlay">
+          <h3>Vehicle Control Units</h3>
+          <p>Smart vehicle system management</p>
+        </div>
+      </div>
+
     </div>
 
   </div>
+
 </section>
+
 
   <!-- ABOUT -->
   <div class="about">
-    <h2>About Zambia EV Market</h2>
+    <h2>About ZEVL</h2>
 
     <p>
-      We are a specialized marketplace for electric vehicle components — connecting buyers and sellers
-      of EV batteries, charging systems, motors, controllers, and spare parts across Zambia.
+We are a specialized electric mobility marketplace connecting buyers and sellers of advanced EV components — including battery systems, charging infrastructure, drive motors, control units, and spare parts — supporting Zambia’s growing electric vehicle ecosystem.
+
     </p>
 
     <div class="about-grid">
@@ -262,11 +978,42 @@ body {
       </div>
     </div>
   </div>
+  <div class="final-cta">
+  <h2>Join the EV Movement in Zambia ⚡</h2>
+  <p>Trade. Learn. Build. Grow the future together.</p>
+<button class="btn-primary" onclick="goSeller()">Get Started</button>
+</div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    © 2026 Zambia EV Market
+<div class="footer">
+  
+  <div class="footer-content">
+
+    <div class="footer-section">
+      <h4>Follow us on</h4>
+
+      <div class="social-icons">
+
+  <a href="#" class="social-btn">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" />
+  </a>
+
+  <a href="#" class="social-btn">
+    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" />
+  </a>
+
+</div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Call us on</h4>
+      <p>+260 XXX XXX XXX</p>
+    </div>
+
   </div>
+
+  <p class="footer-bottom">© 2026 ZEVL ⚡</p>
+
+</div>
 
   <script>
   function goLogin() {
@@ -280,6 +1027,43 @@ body {
   function goSeller() {
     window.location = "register.html"; // signup page
   }
+
+  function goMap(){
+  window.location = "map.html";
+}
+
+function goCommunity(){
+  window.location = "community.html";
+}
+window.addEventListener("load", () => {
+  lucide.createIcons();
+});
+</script>
+<script>
+window.addEventListener("load", () => {
+  const images = document.querySelectorAll(".hero-bg img");
+  let index = 0;
+
+  setInterval(() => {
+    images[index].classList.remove("active");
+    index = (index + 1) % images.length;
+    images[index].classList.add("active");
+ }, 3000);
+});
+</script>
+<script>
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+},{
+  threshold:0.2
+});
+
+document.querySelectorAll(".product-hero, .product-card")
+.forEach(el => observer.observe(el));
 </script>
 
 </body>

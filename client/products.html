@@ -1,62 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 <title>Seller Dashboard</title>
 
 <style>
-
-/* SAME GLOBAL FEEL */
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:#ffffff;
-  color:#111;
+.logo{
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: #111; /* BLACK */
 }
 
-/* NAVBAR (MATCH HOME) */
-.nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px 40px;
-  border-bottom:1px solid #eee;
-  background:white;
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.03), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(0,0,0,0.02), transparent 50%),
+    linear-gradient(180deg, #f8f9fb 0%, #f2f4f7 100%);
+
+  color: #111;
 }
 
-.nav h2{
-  font-size:20px;
-  color:#00c896;
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 }
 
-/* CONTAINER */
-.container{
-  padding:40px;
+/* LEFT */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* CARD (MATCH HOMEPAGE STYLE) */
+/* CENTER (same as buyer dashboard) */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* RIGHT */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-hidden {
+  width: 0;
+  opacity: 0;
+  padding: 8px 0;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.search-active {
+  width: 180px;
+  opacity: 1;
+  padding: 8px 14px;
+}
+
 .card{
-  background:rgba(255,255,255,0.95);
+  background:#fff;
   padding:25px;
   border-radius:18px;
   margin-bottom:25px;
-
-  border:1px solid rgba(0,0,0,0.05);
-  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+  border:1px solid #eee;
+  box-shadow:0 8px 20px rgba(0,0,0,0.05);
 }
 
-/* INPUTS */
-input,textarea{
+.product{
+  padding: 15px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.product:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* IMAGE UPGRADE */
+.product img{
   width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ddd;
-  outline:none;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+
+  transition: transform 0.5s ease;
 }
 
-input:focus, textarea:focus{
-  border-color:#16c784;
+.product:hover img{
+  transform: scale(1.08);
 }
 
 /* DROPDOWN */
@@ -70,138 +128,522 @@ input:focus, textarea:focus{
   font-weight:600;
 }
 
-.dropdown-content{
-  display:none;
-  margin-top:15px;
-}
 
-/* PRODUCT GRID */
-.product-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-
-/* PRODUCT CARD */
-.product{
-  background:white;
-  padding:15px;
-  border-radius:16px;
-  border:1px solid #eee;
-
-  transition:0.25s ease;
-}
-
-.product:hover{
-  transform:translateY(-6px);
-  box-shadow:0 12px 25px rgba(0,0,0,0.08);
-}
-
-.product img{
+/* INPUTS */
+input,textarea{
   width:100%;
-  height:140px;
-  object-fit:cover;
+  padding:10px;
+  margin:6px 0;
   border-radius:10px;
-  margin-bottom:10px;
-}
-
-/* BEST PRODUCT */
-.best-product{
-  display:flex;
-  gap:15px;
-  align-items:center;
-}
-
-.best-product img{
-  width:100px;
-  height:90px;
-  object-fit:cover;
-  border-radius:10px;
+  border:1px solid #ddd;
 }
 
 /* BUTTONS */
 button{
+  margin-top:8px;
   padding:8px 10px;
   border:none;
   border-radius:8px;
   cursor:pointer;
-  margin-top:6px;
-  font-weight:500;
 }
 
-/* BUTTON TYPES */
-.add-btn{
-  background:#16c784;
+.add-btn{ background:#16c784; color:white; width:100%; }
+.edit-btn{ background:#ffc107; }
+.delete-btn{ background:#ff4d4d; color:white; }
+
+/* ORDERS */
+.order{
+  padding:15px;
+  border:1px solid #eee;
+  border-radius:12px;
+  margin-bottom:12px;
+  background:#fafafa;
+}
+
+.empty{
+  text-align:center;
+  color:#777;
+  padding:15px;
+}
+/* ICON BUTTON */
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background: rgba(0,0,0,0.05);
+  cursor:pointer;
+  transition:0.2s;
+}
+.icon-btn:hover{
+  background:#111;
   color:white;
+}
+/* target the actual SVG inside the button */
+.icon-btn svg {
+  stroke: #111;
+  transition: 0.2s;
+}
+
+/* 🔥 force white icon on hover */
+.icon-btn:hover svg {
+  stroke: white !important;
+}
+
+.notif-box{
+  position:absolute;
+  right:0;
+  top:45px;
+  width:180px;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+  overflow:hidden;
+  z-index:99999;
+
+  /* 🔥 animation setup */
+  opacity:0;
+  transform: translateY(-10px);
+  max-height:0;
+
+  pointer-events:none;
+  transition: all 0.25s ease;
+}
+
+/* ACTIVE STATE */
+.notif-box.show{
+  opacity:1;
+  transform: translateY(0);
+  max-height:300px;
+  pointer-events:auto;
+}
+.notif-item{
+  padding: 12px 14px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 14px;
+
+  transition: 0.2s;
+}
+
+.notif-item:hover{
+  background: rgba(0,0,0,0.04);
+  transform: translateX(3px);
+}
+.dropdown-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+  margin-top: 10px;
+}
+
+.dropdown-content.show {
+  max-height: 400px;
+  opacity: 1;
+  transform: translateY(0);
+}
+.dropdown-content input,
+.dropdown-content textarea,
+.dropdown-content select{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #111;
+
+  border-radius: 10px;
+  padding: 10px 12px;
+
+  transition: 0.2s;
+}
+
+.dropdown-content input:focus,
+.dropdown-content textarea:focus,
+.dropdown-content select:focus{
+  outline: none;
+  border-color: #16c784;
+  box-shadow: 0 0 0 3px rgba(22,199,132,0.15);
+}
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.25s ease;
+  z-index:99999;
+}
+
+.popup.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.popup-box{
+  background:#000;
+  color:#fff;
+  padding:25px 30px;
+  border-radius:14px;
+  text-align:center;
+  min-width:280px;
+}
+
+.popup-box.success{
+  border:1px solid #16c784;
+}
+
+.popup-box.error{
+  border:1px solid #ff4d4f;
+}
+.product-card.hide {
+  opacity: 0;
+  transform: scale(0.92) translateY(10px);
+  pointer-events: none;
+}
+
+.product-card.show {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.product-img{
   width:100%;
+  height:160px;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  background:#f5f5f5;
 }
 
+button{
+  font-family:'Poppins',sans-serif;
+  transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+  transform: translateY(0);
+}
+
+/* ADD PRODUCT (PRIMARY CTA) */
+.add-btn{
+  margin-top: 12px;
+
+  background: linear-gradient(135deg, #16c784, #0ea56b);
+  color: white;
+
+  font-weight: 600;
+  border-radius: 12px;
+
+  padding: 12px;
+
+  width: 100%;
+
+  box-shadow: 0 12px 30px rgba(22,199,132,0.25);
+
+  transition: all 0.25s ease;
+}
+
+.add-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(22,199,132,0.35);
+}
+
+.add-btn:active{
+  transform: scale(0.98);
+}
+
+/* EDIT */
 .edit-btn{
-  background:#ffc107;
+  background: rgba(255, 193, 7, 0.12);
+  color: #d6a600;
+  border: 1px solid rgba(255, 193, 7, 0.35);
 }
 
+.edit-btn:hover{
+  background: #ffc107;
+  color: black;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255,193,7,0.25);
+}
+
+/* DELETE */
 .delete-btn{
-  background:#ff4d4d;
-  color:white;
+  background: rgba(255, 77, 79, 0.12);
+  color: #ff4d4f;
+  border: 1px solid rgba(255, 77, 79, 0.35);
 }
 
-/* LOGOUT BUTTON */
-.nav button{
-  background:black;
-  color:white;
-  padding:8px 16px;
-  border-radius:20px;
+.delete-btn:hover{
+  background: #ff4d4f;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255,77,79,0.25);
 }
 
-/* HEADINGS */
-h3{
-  margin-bottom:15px;
+/* ALL BUTTON CLICK FEEL */
+button:active{
+  transform: scale(0.97);
+}
+/* ================= TESLA PRODUCT CARDS ================= */
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:22px;
 }
 
+/* IMAGE WRAPPER */
+.product-media{
+  position:relative;
+  height:180px;
+  overflow:hidden;
+  padding: 10px;
+  border-radius: 18px;
+}
+
+.product-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+
+  border-radius:16px;
+
+  transform: none !important;
+  transition: none !important;
+}
+.product-card:hover .product-media img{
+  transform: scale(1.12);
+  border-radius: 18px;
+}
+
+/* SOFT GREEN GLOW */
+.product-glow{
+  display:none;
+}
+
+.product-card:hover .product-glow{
+  opacity:1;
+}
+
+/* INFO SECTION */
+.product-info{
+  padding:14px;
+}
+
+.product-info h3{
+  margin:0;
+  font-size:16px;
+  color:#111;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+
+.price{
+  color:#16c784;
+  font-weight:600;
+  margin:4px 0;
+}
+
+.stock{
+  font-size:13px;
+  opacity:0.7;
+}
+
+/* ACTIONS */
+.product-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.product-actions button{
+  flex:1;
+  padding:8px;
+  border-radius:10px;
+  font-size:12px;
+}
+.edit-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+
+  z-index: 100;
+
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 10px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+}
+
+.edit-dropdown.show {
+  max-height: 400px;
+  opacity: 1;
+  transform: translateY(0);
+}
+.product-card{
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.04);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.04),
+    0 8px 20px rgba(0,0,0,0.15);
+
+backdrop-filter: none;
+
+  transform: translateY(0);
+  transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+}
+.product-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+.product-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.08),
+    transparent 40%,
+    rgba(22,199,132,0.05)
+  );
+
+  opacity:0.6;
+  pointer-events:none;
+}
+.product-card.active{
+  z-index: 9999 !important;
+}
+.product-grid{
+  position: relative;
+  z-index: 1;
+}
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(-5px);}
+  to {opacity:1; transform: translateY(0);}
+}
 </style>
 </head>
 
 <body>
-
-<!-- NAV -->
 <div class="nav">
-<h2 id="welcome">Seller Dashboard</h2>
-<button onclick="logout()">Logout</button>
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <button class="icon-btn" onclick="toggleSellerSearch()" title="Search My Products">
+      <i data-lucide="search"></i>
+    </button>
+
+    <input id="sellerSearch" class="search-hidden" placeholder="Search your products..." oninput="filterMyProducts()">
+
+    <button class="icon-btn" onclick="goProfile()" title="Profile">
+      <i data-lucide="user"></i>
+    </button>
+  </div>
+
+  <!-- CENTER -->
+ <div class="nav-center logo">
+  ZEVL
 </div>
 
-<div class="container">
+  <!-- RIGHT -->
+  <div class="nav-right">
 
-<!-- ================= ADD PRODUCT DROPDOWN ================= -->
+    <!-- NOTIFICATIONS -->
+    <div style="position:relative;">
+      <button class="icon-btn" onclick="toggleNotifications()" title="Notifications">
+        <i data-lucide="bell"></i>
+      </button>
+
+     <div id="notifBox" class="notif-box">
+
+  <div class="notif-item" onclick="goChats()">
+    <i data-lucide="message-circle"></i>
+    <span>View Chats</span>
+  </div>
+
+  <div class="notif-item" onclick="goOrders()">
+    <i data-lucide="package"></i>
+    <span>View Orders</span>
+  </div>
+
+</div>
+</div>
+
+    <!-- LOGOUT -->
+    <button onclick="logout()">Logout</button>
+
+  </div>
+
+</div>
+
+<!-- ADD PRODUCT -->
 <div class="card">
-<button class="dropbtn" onclick="toggleAdd()">
-Add Product
-</button>
+<button class="dropbtn" onclick="toggleAdd()">Add Product</button>
 
 <div id="addBox" class="dropdown-content">
 
-<input id="name" placeholder="Name">
+<input id="name" placeholder="Product Name">
 <textarea id="description" placeholder="Description"></textarea>
-<input id="price" placeholder="Price">
+<input id="price" type="number" placeholder="Price">
 <input id="stock" placeholder="Stock">
-<input type="file" id="images" multiple>
+<input type="file" id="image" multiple>
+<small id="imgCount">No images selected</small>
 
 <button class="add-btn" onclick="addProduct()">Add Product</button>
+<select id="category">
+  <option value="battery">Battery & Energy Storage</option>
+  <option value="charging">Charging Equipment</option>
+  <option value="drivetrain">Electric Drivetrain Components</option>
+  <option value="electronics">Control & Electronics</option>
+  <option value="mechanical">Mechanical & Suspension Parts</option>
+</select>
 
 </div>
-</div>
-
-<!-- BEST PRODUCT -->
-<div class="card">
-<h3>🔥 Best Performing Product</h3>
-<div id="bestProductBox">Loading...</div>
 </div>
 
 <!-- PRODUCTS -->
 <div class="card">
 <h3>Your Products</h3>
-
 <div class="product-grid" id="list"></div>
+</div>
 
+<!-- ORDERS -->
+<div class="card">
+<h3>📦 Customer Orders</h3>
+<div id="orders" class="empty">Loading orders...</div>
 </div>
 
 </div>
@@ -209,175 +651,294 @@ Add Product
 <script>
 
 const token = localStorage.getItem("token");
-if(!token) window.location="login.html";
 
-const name = document.getElementById("name");
-const description = document.getElementById("description");
-const price = document.getElementById("price");
-const stock = document.getElementById("stock");
-const image = document.getElementById("image");
-// ================= TOGGLE ADD PRODUCT =================
-function toggleAdd(){
-const box = document.getElementById("addBox");
-box.style.display = box.style.display === "block" ? "none" : "block";
+if(!token){
+showPopup("Session Expired", "Please login again", "error");
+  window.location = "login.html";
 }
-
 // ================= USER =================
 async function loadUser(){
-const res=await fetch("/api/me",{headers:{Authorization:"Bearer "+token}});
-const user=await res.json();
-document.getElementById("welcome").innerText="👋 Welcome back, "+user.name;
-}
+  try{
+    const res = await fetch("/api/me",{headers:{Authorization:"Bearer "+token}});
+    const user = await res.json();
 
-// ================= BEST PRODUCT =================
-async function loadBestProduct(){
-const res=await fetch("/api/seller/best-product",{headers:{Authorization:"Bearer "+token}});
-const p=await res.json();
+    console.log("USER:", user); // debug only
 
-const box=document.getElementById("bestProductBox");
-
-if(!p || p.message){
-box.innerHTML="No data yet";
-return;
-}
-
-box.innerHTML=`
-<div class="best-product">
-<img src="${p.image_url}">
-<div>
-<b>${p.name}</b><br>
-❤️ ${p.wishlist_count} | 🛒 ${p.cart_count}<br>
-🔥 Score: ${p.score}
-</div>
-</div>
-`;
-}
-
-async function editProduct(id){
-
-  const name = prompt("Enter new name:");
-  const description = prompt("Enter new description:");
-  const price = prompt("Enter new price:");
-  const stock = prompt("Enter new stock:");
-  const image_url = prompt("Enter new image URL (optional):");
-
-  if(!name || !price){
-    alert("Name and price are required");
-    return;
+  }catch(err){
+    console.log("User load failed");
   }
+}
 
-  const body = {
-    name,
-    description,
-    price,
-    stock,
-    image_url
-  };
+// ================= TOGGLE ADD =================
+function toggleAdd(){
+  const box = document.getElementById("addBox");
 
-  const res = await fetch(`/api/my-products/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify(body)
+  if(box.classList.contains("show")){
+    box.classList.remove("show");
+    setTimeout(()=> box.style.display = "none", 300);
+  } else {
+    box.style.display = "block";
+    setTimeout(()=> box.classList.add("show"), 10);
+  }
+}
+//search
+function toggleSellerSearch(){
+  document.getElementById("sellerSearch").classList.toggle("search-active");
+}
+
+function filterMyProducts(){
+  const q = document.getElementById("sellerSearch").value.toLowerCase();
+  const cards = document.querySelectorAll("#list .product-card"); // ✅ FIXED
+
+  cards.forEach(card=>{
+    const text = card.innerText.toLowerCase();
+
+    if(text.includes(q)){
+      card.classList.remove("hide");
+      card.classList.add("show");
+    } else {
+      card.classList.add("hide");
+      card.classList.remove("show");
+    }
+  });
+}
+
+function goProfile(){
+  window.location = "/seller-profile.html";
+}
+
+function toggleNotifications(){
+  document.getElementById("notifBox").classList.toggle("show");
+}
+
+// go to chat page (you already use seller_name system)
+function goChats(){
+  window.location = "/chat-inbox.html"; // change if your page name differs
+}
+
+// close dropdown when clicking outside
+document.addEventListener("click", function(e){
+  const box = document.getElementById("notifBox");
+  const bell = e.target.closest(".icon-btn");
+  const notif = e.target.closest("#notifBox");
+
+ if(!bell && !notif){
+    box.classList.remove("show");
+  }
+});
+
+function toggleEdit(id){
+
+  const box = document.getElementById("edit-" + id);
+  if(!box) return;
+
+  const card = box.closest(".product-card");
+  if(!card) return;
+
+  const isOpen = box.classList.contains("show");
+
+  document.querySelectorAll(".edit-dropdown").forEach(el=>{
+    el.classList.remove("show");
   });
 
-  const data = await res.json();
+  document.querySelectorAll(".product-card").forEach(c=>{
+    c.classList.remove("active");
+  });
 
-  if(!res.ok){
-    alert(data.message || "Update failed");
-    return;
+  if(!isOpen){
+    box.classList.add("show");
+    card.classList.add("active");
   }
-
-  loadProducts();
-  loadBestProduct();
 }
 
 // ================= PRODUCTS =================
 async function loadProducts(){
-const res=await fetch("/api/my-products",{headers:{Authorization:"Bearer "+token}});
-const data=await res.json();
+  try{
 
-const list=document.getElementById("list");
-list.innerHTML="";
+    const res = await fetch("/api/my-products", {
+      headers:{Authorization:"Bearer "+token},
+      cache:"no-store"
+    });
+    const data = await res.json();
 
-data.forEach(p=>{
-list.innerHTML+=`
-<div class="product">
+    const list = document.getElementById("list");
 
-<img src="${p.image_url}">
+    list.innerHTML = ""; // clean DOM
 
-<b>${p.name}</b><br>
-${p.description || ""}<br>
-💰 ${p.price}<br>
-📦 ${p.stock}
+    const unique = new Map();
+    data.forEach(p => {
+      if(!unique.has(p.id)){
+        unique.set(p.id, p);
+      }
+    });
 
-<button class="edit-btn" onclick="editProduct(${p.id})">Edit</button>
-<button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+const fragment = document.createDocumentFragment();
 
-</div>
-`;
+unique.forEach(p => {
+  const div = document.createElement("div");
+  div.className = "product-card show";
+
+  div.innerHTML = `
+    <div class="product-media">
+      <img loading="lazy" src="${(p.images && p.images[0]) || p.image_url || '/Images/placeholder.jpg'}">
+      <div class="product-glow"></div>
+    </div>
+
+    <div class="product-info">
+      <h3>${p.name || "Unnamed Product"}</h3>
+      <p class="price">ZMW ${p.price ?? 0}</p>
+      <p class="stock">Stock: ${p.stock}</p>
+
+      <div class="product-actions">
+        <button class="edit-btn" onclick="toggleEdit(${p.id})">Edit</button>
+        <button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    </div>
+
+    <div id="edit-${p.id}" class="edit-dropdown">
+      <input id="edit-name-${p.id}" value="${p.name}">
+      <input id="edit-price-${p.id}" value="${p.price}">
+      <input id="edit-stock-${p.id}" value="${p.stock}">
+      <input type="file" id="edit-image-${p.id}">
+      <button onclick="saveEdit(${p.id})" class="add-btn">Save</button>
+    </div>
+  `;
+
+  fragment.appendChild(div);
 });
+
+list.appendChild(fragment);
+
+
+  }catch(err){
+    console.error("LOAD PRODUCTS ERROR:", err);
+    document.getElementById("list").innerHTML =
+      "<p class='empty'>Failed to load products</p>";
+  }
 }
 
-// ================= ADD =================
+// ================= ADD PRODUCT =================
 async function addProduct(){
-const fd=new FormData();
+  console.log("ADD CLICKED"); // ✅ add this
 
-fd.append("name",name.value);
-fd.append("description",description.value);
-fd.append("price",price.value);
-fd.append("stock",stock.value);
+const fd = new FormData();
 
-const files = document.getElementById("images").files;
+fd.append("name", document.getElementById("name").value);
+fd.append("description", document.getElementById("description").value);
+fd.append("price", document.getElementById("price").value);
+fd.append("stock", document.getElementById("stock").value);
+fd.append("category", document.getElementById("category").value);
+const files = document.getElementById("image").files;
 
 for (let i = 0; i < files.length; i++) {
   fd.append("images", files[i]);
 }
 
-await fetch("/api/my-products",{
+await fetch("/api/products",{ // ✅ FIXED
 method:"POST",
 headers:{Authorization:"Bearer "+token},
 body:fd
 });
 
-loadProducts();
-loadBestProduct();
+showPopup("Success", "Product added successfully", "success");
+
+setTimeout(loadProducts, 200);
 }
 
 // ================= DELETE =================
 async function deleteProduct(id){
 
-  if(!confirm("Are you sure you want to delete this product?")) return;
+  const res = await fetch(`/api/products/${id}`,{
+    method:"DELETE",
+    headers:{Authorization:"Bearer "+token}
+  });
 
-  try {
-    const res = await fetch(`/api/my-products/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    });
-
-    const data = await res.json();
-
-    if(!res.ok){
-      alert(data.message || "Delete failed");
-      console.log("DELETE ERROR:", data);
-      return;
-    }
-
-    alert("Product deleted successfully");
-
-    loadProducts();
-    loadBestProduct();
-
-  } catch (err) {
-    console.log("NETWORK ERROR:", err);
-    alert("Server not reachable");
+  if(!res.ok){
+    showPopup("Error","Delete failed","error");
+    return;
   }
+
+  showPopup("Deleted","Product removed","success");
+
+  // small delay so popup shows properly
+  setTimeout(() => {
+    loadProducts();
+  }, 300);
+}
+// ================= EDIT =================
+async function saveEdit(id){
+
+  const fd = new FormData();
+
+  fd.append("name", document.getElementById(`edit-name-${id}`).value);
+  fd.append("price", document.getElementById(`edit-price-${id}`).value);
+  fd.append("stock", document.getElementById(`edit-stock-${id}`).value);
+
+  const file = document.getElementById(`edit-image-${id}`).files[0];
+  if(file) fd.append("image", file);
+
+  const res = await fetch(`/api/products/${id}`,{
+    method:"PUT",
+    headers:{ Authorization:"Bearer "+token },
+    body: fd
+  });
+
+  if(!res.ok){
+    showPopup("Error","Update failed","error");
+    return;
+  }
+
+  showPopup("Updated","Product updated","success");
+
+  // ✅ IMPORTANT: wait properly, then reload
+  await loadProducts();
+}
+// ================= LOAD ORDERS =================
+async function loadOrders(){
+
+const box = document.getElementById("orders");
+
+try{
+const res = await fetch("/api/seller/orders",{
+headers:{Authorization:"Bearer "+token}
+});
+
+if(!res.ok){
+throw new Error();
 }
 
+const orders = await res.json();
+
+box.innerHTML = "";
+
+// ✅ FIX: HANDLE EMPTY PROPERLY
+if(!orders || orders.length === 0){
+box.innerHTML = "<p class='empty'>No orders placed yet</p>";
+return;
+}
+
+// ✅ SHOW ORDERS
+orders.forEach(o=>{
+box.innerHTML += `
+<div class="order">
+<b>Buyer:</b> ${o.buyer_name}<br>
+📞 ${o.phone}<br>
+📍 ${o.address}<br><br>
+
+<b>Items:</b> ${o.items}<br>
+💰 Total: ZMW ${o.total}
+</div>
+`;
+});
+
+}catch(err){
+// ✅ FIX: NO MORE STUCK LOADING
+box.innerHTML = "<p class='empty'>No orders placed yet</p>";
+}
+}
+function goOrders(){
+  window.location = "/orders.html";
+}
 // ================= LOGOUT =================
 function logout(){
 localStorage.clear();
@@ -385,11 +946,44 @@ window.location="login.html";
 }
 
 // ================= INIT =================
-loadUser();
-loadProducts();
-loadBestProduct();
+window.onload = () => {
+  loadUser();
+  loadProducts();
+  loadOrders();
+};
+document.addEventListener("DOMContentLoaded", () => {
+  lucide.createIcons();
 
+  document.getElementById("image").addEventListener("change", function () {
+    const count = this.files.length;
+    document.getElementById("imgCount").innerText =
+      count ? `${count} image(s) selected` : "No images selected";
+  });
+});
+function showPopup(title, msg, type) {
+  const popup = document.getElementById("popup");
+  const box = popup.querySelector(".popup-box");
+
+  document.getElementById("popup-title").innerText = title;
+  document.getElementById("popup-msg").innerText = msg;
+
+  box.classList.remove("success", "error");
+  if (type) box.classList.add(type);
+
+  popup.classList.add("show");
+
+  setTimeout(() => {
+    popup.classList.remove("show");
+  }, 2000);
+}
 </script>
+
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <h3 id="popup-title">Message</h3>
+    <p id="popup-msg">Details</p>
+  </div>
+</div>
 
 </body>
 </html>

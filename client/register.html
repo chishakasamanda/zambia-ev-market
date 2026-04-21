@@ -2,66 +2,361 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
-<title>Seller Register</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  <title>Register | Zambia EV Landscape</title>
 
-<style>
-body{
-  font-family:Arial;
-  background:linear-gradient(135deg,#0f2027,#2c5364);
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ev-green: #16c784;
+    }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: radial-gradient(circle at center, rgba(22,199,132,0.04), transparent 65%);
+
+  pointer-events: none;
+}
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background:transparent;
+border-bottom:none;
+position:absolute;
+top:10px;
+left:0;
+width:100%;
+z-index:9999;
+    }
+.nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+
+  background: transparent;
+  border-bottom: none;
+
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+}
+
+.nav-left, .nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* SAME ICON BUTTON STYLE */
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background:#f5f5f5;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
+  .logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+}
+.card {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+
+  padding: 35px;
+  border-radius: 18px;
+  width: 360px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+  color: white;
+  
+}
+.card:hover {
+  box-shadow: 0 25px 60px rgba(0,0,0,0.25),
+              0 0 40px rgba(22,199,132,0.10);
+}
+    .card h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    /* ROLE SELECT */
+    .role-select {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.role-btn.active {
+  background: #16c784;
+  color: black;
+  border: none;
+}
+
+ input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+
+  background: rgba(255,255,255,0.05);
+  color: white;
+
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+    button.register-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      border: none;
+      background: var(--ev-green);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    button.register-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .login-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .login-text a {
+      color: var(--ev-green);
+      text-decoration: none;
+      font-weight: 600;
+    }
+.form-container {
+  min-height: 111vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 0;
+  position: relative;
+  z-index: 1;
+}
+.popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background:rgba(0,0,0,0.75);
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
-  color:white;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.25s ease;
+  z-index:9999;
 }
-.card{
-  background:#ffffff10;
-  padding:30px;
-  border-radius:15px;
-  backdrop-filter:blur(10px);
-  width:320px;
+
+.popup.show{
+  opacity:1;
+  pointer-events:auto;
 }
-input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border:none;
-  border-radius:8px;
+
+.popup-box{
+  background:#000;
+  color:#fff;
+  padding:25px 30px;
+  border-radius:14px;
+  text-align:center;
+  animation: pop 0.25s ease;
+  min-width:280px;
+
+  box-shadow:0 20px 60px rgba(0,0,0,0.6),
+             0 0 20px rgba(22,199,132,0.15); /* 👈 glow */
 }
-button{
-  width:100%;
-  padding:10px;
-  border:none;
-  background:#00ffcc;
-  font-weight:bold;
-  border-radius:8px;
-  cursor:pointer;
+
+
+.popup-box h3{
+  margin:0;
+  font-size:18px;
 }
-a{
-  color:#00ffcc;
-  text-decoration:none;
+
+.popup-box p{
+  margin-top:8px;
+  font-size:13px;
+  color:#ccc;
+}
+#formTitle {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#formTitle.switching {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card.seller {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 25px 70px rgba(22,199,132,0.12);
+}
+
+.card.buyer {
+  transform: translateY(0px) scale(1);
+}
+@keyframes pop{
+  from{
+    transform:scale(0.8);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-<h2>Seller Registration ⚡</h2>
+<!-- NAVBAR -->
+<div class="nav">
 
-<input type="text" id="name" placeholder="Full Name">
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+  <div class="nav-left">
+    <button class="icon-btn" onclick="goBack()" title="Back">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
 
-<button onclick="register()">Register as Seller</button>
+<div class="nav-center logo">
+  ZEVL
+</div>
 
-<p style="text-align:center;margin-top:15px;">
-Already have an account? 
-<a href="login.html">Login here</a>
-</p>
+  <div class="nav-right"></div>
+
+</div>
+<!-- FORM -->
+<div class="form-container">
+  <div class="card">
+
+    <h2 id="formTitle">Create Account</h2>
+
+   <div class="role-select">
+  <div class="role-slider"></div>
+  <button class="role-btn active" onclick="setRole('buyer', this)">Buyer</button>
+  <button class="role-btn" onclick="setRole('seller', this)">Seller</button>
+</div>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button class="register-btn" onclick="register()">Register</button>
+
+    <p class="login-text">
+      Already have an account? 
+      <a href="login.html">Login here</a>
+    </p>
+
+
+  </div>
 </div>
 
 <script>
+let selectedRole = "buyer";
+
+function setRole(role, btn){
+  selectedRole = role;
+
+  document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  const title = document.getElementById("formTitle");
+
+  // fade out
+  title.classList.add("switching");
+
+  setTimeout(() => {
+    title.innerText =
+      role === "buyer" ? "Buyer Registration " : "Seller Registration ";
+
+    // fade in
+    title.classList.remove("switching");
+  }, 150);
+
+  card.classList.toggle("seller", role === "seller");
+  card.classList.toggle("buyer", role === "buyer");
+}
+
 async function register(){
 
   const name = document.getElementById("name").value.trim();
@@ -82,23 +377,42 @@ async function register(){
         name, 
         email, 
         password,
-        role: "seller"
+        role: selectedRole
       })
     });
 
     const data = await res.json();
 
-    if(res.ok){
-      alert("Seller registered successfully");
-      window.location.href = "login.html";
-    } else {
-      alert(data.message);
-    }
+  if(res.ok){
+
+  const popup = document.getElementById("popup");
+  popup.classList.add("show");
+
+  setTimeout(() => {
+    popup.classList.remove("show");
+    window.location.href = "login.html";
+  }, 1800);
+
+} else {
+  alert(data.message);
+}
 
   } catch(err){
     alert("Server error");
   }
 }
+function goBack(){
+  window.history.back();
+}
+lucide.createIcons();
 </script>
+
+   <div id="popup" class="popup">
+  <div class="popup-box">
+    <h3>Account Created Successfully</h3>
+    <p>You can now log in to your account</p>
+  </div>
+</div>
+
 </body>
 </html>

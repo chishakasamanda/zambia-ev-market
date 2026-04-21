@@ -1,163 +1,205 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
-    <title>Checkout</title>
+<link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+<title>Checkout</title>
 
 <style>
 
-/* LAYOUT */
 .container{
-  padding: 50px 20px;
-  max-width: 1000px;
-  margin: auto;
+  padding:30px 20px;
+  max-width:1000px;
+  margin:auto;
 }
 
-/* HEADER */
-.header{
-  margin-bottom: 25px;
-}
+.header h2{ margin:10; }
+.header p{ color:#666; }
 
-.header h2{
-  margin: 0;
-}
-
-.header p{
-  color: #666;
-  margin-top: 5px;
-}
-
-/* GRID (clean professional layout) */
 .checkout-grid{
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 20px;
+  display:grid;
+  grid-template-columns:1.2fr 0.8fr;
+  gap:20px;
 }
 
-/* MOBILE FALLBACK */
-@media(max-width: 768px){
-  .checkout-grid{
-    grid-template-columns: 1fr;
-  }
+@media(max-width:768px){
+  .checkout-grid{ grid-template-columns:1fr; }
 }
 
-/* CARD */
 .card{
-  background: rgba(255,255,255,0.9);
-  padding: 25px;
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.06);
-  backdrop-filter: blur(10px);
-  transition: 0.25s ease;
+  background:rgba(255,255,255,0.9);
+  padding:25px;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,0.06);
+  backdrop-filter:blur(10px);
 }
 
-.card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+input, textarea, select{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-family:'Poppins',sans-serif;
 }
 
-/* CARD TITLE */
-.card h3{
-  margin-top: 0;
-  margin-bottom: 15px;
+.small-btn{
+  margin-top:5px;
+  padding:8px;
+  border:none;
+  border-radius:20px;
+  background:#111;
+  color:white;
+  cursor:pointer;
+  font-size:12px;
 }
 
-/* INPUTS */
-input, textarea{
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* SUMMARY ITEMS */
 .summary-item{
-  display: flex;
-  justify-content: space-between;
-  margin: 8px 0;
-  font-size: 14px;
+  display:flex;
+  justify-content:space-between;
+  margin:8px 0;
 }
 
 .summary-total{
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-  font-weight: 600;
-  font-size: 16px;
+  margin-top:15px;
+  border-top:1px solid #eee;
+  padding-top:10px;
+  font-weight:600;
 }
 
-/* TRUST BADGE */
-.trust{
-  margin-top: 15px;
-  font-size: 13px;
-  color: #16c784;
-}
-
-/* BUTTON */
 button{
-  margin-top: 20px;
-  padding: 14px;
-  width: 100%;
-  border: none;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-
-  background: linear-gradient(135deg,#16c784,#00c2ff);
-  color: white;
-
-  transition: 0.25s ease;
+  margin-top:20px;
+  padding:14px;
+  width:100%;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
 }
 
-button:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 12px 25px rgba(22,199,132,0.25);
+.hidden{
+  display:none;
+}
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  border:none;
+  background:#f5f5f5;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-button:active{
-  transform: translateY(-2px) scale(0.98);
+.icon-btn:hover{
+  background:#111;
 }
 
+.icon-btn:hover svg{
+  stroke:white;
+}
+
+.icon-btn svg{
+  width:26px;
+  height:26px;
+  stroke:#111; /* IMPORTANT FIX */
+}
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+  background:white;
+  border-bottom:1px solid #eee;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.nav-left, .nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:0.5px;
+  color:#111;
+  pointer-events:none; /* IMPORTANT FIX */
+}
 </style>
 </head>
 
 <body>
+  <div class="nav">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <button class="icon-btn" onclick="back()" title="Back">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
+
+  <!-- CENTER -->
+  <div class="nav-center">
+    ZEVL ⚡
+  </div>
+
+  <!-- RIGHT -->
+  <div class="nav-right"></div>
+
+</div>
 
 <div class="container">
 
-<!-- HEADER -->
 <div class="header">
   <h2>Checkout</h2>
-  <p>Complete your order with Cash on Delivery</p>
 </div>
 
 <div class="checkout-grid">
 
-  <!-- LEFT: DELIVERY -->
-  <div class="card">
-    <h3>Delivery Details</h3>
+<!-- LEFT -->
+<div class="card">
+<h3>Delivery Details</h3>
 
-    <input id="name" placeholder="Full Name">
-    <input id="phone" placeholder="Phone Number">
-    <textarea id="address" placeholder="Delivery Address"></textarea>
-  </div>
+<input id="name" placeholder="Full Name">
+<input id="phone" placeholder="Zambian Phone (e.g. 097xxxxxxx)">
+<textarea id="address" placeholder="Delivery Address (e.g. Lusaka, Kabulonga)"></textarea>
 
-  <!-- RIGHT: SUMMARY -->
-  <div class="card">
-    <h3>Order Summary</h3>
-    <div id="summary">Loading...</div>
+<button class="small-btn" onclick="saveAddress()">Save Details</button>
+<button class="small-btn" onclick="applySaved()">Use Saved Address</button>
 
-    <div class="trust">
-      ✔ Secure Cash on Delivery
-    </div>
+<h3>Payment Method</h3>
 
-    <button onclick="placeOrder()">Place Order</button>
-  </div>
+<select id="payment" onchange="togglePayment()">
+  <option value="cod">Cash on Delivery</option>
+  <option value="mtn">MTN Money</option>
+  <option value="airtel">Airtel Money</option>
+</select>
+
+<input id="payPhone" class="hidden" placeholder="Mobile Money Number">
 
 </div>
 
+<!-- RIGHT -->
+<div class="card">
+<h3>Order Summary</h3>
+<div id="summary">Loading...</div>
+
+<button onclick="placeOrder()">Place Order</button>
+
+</div>
+
+</div>
 </div>
 
 <script>
@@ -165,68 +207,193 @@ button:active{
 const token = localStorage.getItem("token");
 if(!token) window.location="login.html";
 
-// LOAD CART
-async function loadCart(){
-const res = await fetch("/api/cart", {
-headers: { Authorization: "Bearer " + token }
-});
+// DOM helpers (IMPORTANT FIX)
+const nameInput = document.getElementById("name");
+const phoneInput = document.getElementById("phone");
+const addressInput = document.getElementById("address");
+const payPhoneInput = document.getElementById("payPhone");
 
+function back(){
+  window.location = "cart.html";
+}
+
+// ================= CART =================
+async function loadCart(){
+const res = await fetch("/api/cart",{headers:{Authorization:"Bearer "+token}});
 const data = await res.json();
 
-let total = 0;
-let html = "";
+let total=0;
+let html="";
 
-data.forEach(item => {
+data.forEach(item=>{
 total += item.price * item.quantity;
 
 html += `
 <div class="summary-item">
-  <span>${item.name} x ${item.quantity}</span>
-  <span>ZMW ${item.price * item.quantity}</span>
+<span>${item.name} x ${item.quantity}</span>
+<span>ZMW ${item.price * item.quantity}</span>
 </div>
 `;
 });
 
-html += `
-<div class="summary-total">
-  Total: ZMW ${total}
-</div>
-`;
-
+html += `<div class="summary-total">Total: ZMW ${total}</div>`;
 document.getElementById("summary").innerHTML = html;
-}
+lucide.createIcons();
 
+}
 loadCart();
 
-// PLACE ORDER
-async function placeOrder(){
+// ================= VALIDATION =================
+function isValidZambianPhone(phone){
+return /^(\+260|0)[7-9][0-9]{8}$/.test(phone);
+}
 
-const order = {
-name: name.value,
-phone: phone.value,
-address: address.value
-};
+function isValidZambianAddress(addr){
+const keywords = ["lusaka","kitwe","ndola","kabwe","livingstone","zambia"];
+return keywords.some(k => addr.toLowerCase().includes(k));
+}
 
-if(!order.name || !order.phone || !order.address){
-alert("Fill all details");
+// ================= SAVE =================
+function saveAddress(){
+
+const name = nameInput.value.trim();
+const phone = phoneInput.value.trim();
+const address = addressInput.value.trim();
+
+if(!name || !phone || !address){
+alert("Fill all fields before saving");
 return;
 }
 
-const res = await fetch("/api/checkout", {
+if(!isValidZambianPhone(phone)){
+alert("Enter valid Zambian phone number");
+return;
+}
+
+if(!isValidZambianAddress(address)){
+alert("Enter valid Zambian address (Lusaka, Kitwe, etc.)");
+return;
+}
+
+localStorage.setItem("profile", JSON.stringify({name,phone,address}));
+
+alert("Address saved successfully");
+}
+
+// ================= APPLY =================
+function applySaved(){
+const saved = JSON.parse(localStorage.getItem("profile"));
+
+if(!saved){
+alert("No saved address found");
+return;
+}
+
+nameInput.value = saved.name || "";
+phoneInput.value = saved.phone || "";
+addressInput.value = saved.address || "";
+}
+
+// ================= PAYMENT TOGGLE =================
+function togglePayment(){
+const method = document.getElementById("payment").value;
+
+if(method === "mtn" || method === "airtel"){
+payPhoneInput.classList.remove("hidden");
+}else{
+payPhoneInput.classList.add("hidden");
+}
+}
+
+// ================= ORDER =================
+async function placeOrder(){
+
+const payment = document.getElementById("payment").value;
+
+const order = {
+name: nameInput.value.trim(),
+phone: phoneInput.value.trim(),
+address: addressInput.value.trim(),
+payment_method: payment,
+payment_phone: payPhoneInput.value.trim()
+};
+
+// VALIDATION
+if(!order.name || !order.phone || !order.address){
+alert("⚠ Please fill all delivery details");
+return;
+}
+
+if(!isValidZambianPhone(order.phone)){
+alert("⚠ Enter valid Zambian phone number");
+return;
+}
+
+if(!isValidZambianAddress(order.address)){
+alert("⚠ Enter valid Zambian address");
+return;
+}
+
+if((payment === "mtn" || payment === "airtel") && !isValidZambianPhone(order.payment_phone)){
+alert("⚠ Enter valid Mobile Money number");
+return;
+}
+
+// COD FLOW (FIXED)
+if(payment === "cod"){
+
+await fetch("/api/checkout",{
 method:"POST",
 headers:{
 "Content-Type":"application/json",
-"Authorization":"Bearer " + token
+Authorization:"Bearer "+token
 },
-body: JSON.stringify(order)
+body:JSON.stringify(order)
 });
 
-const data = await res.json();
-
-alert(data.message);
-window.location="buyer-dashboard.html";
+alert("✅ Order placed successfully (Cash on Delivery)");
+window.location.href = "order-success.html";
+return;
 }
 
+// MOBILE MONEY SIMULATION
+alert("💳 Processing payment...");
+
+await new Promise(r => setTimeout(r, 1000));
+alert("Connecting to network...");
+
+await new Promise(r => setTimeout(r, 1200));
+
+const success = Math.random() > 0.1;
+
+if(!success){
+alert("❌ Payment failed. Try again.");
+return;
+}
+
+alert("✔ Payment successful");
+
+await fetch("/api/checkout",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify(order)
+});
+
+alert("🎉 Order confirmed!");
+window.location.href = "order-success.html";
+
+}
+function initIcons(){
+  lucide.createIcons();
+}
+
+window.onload = () => {
+  loadCart();
+  initIcons();
+};
 </script>
 
 </body>

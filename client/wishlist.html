@@ -2,11 +2,60 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <title>Wishlist</title>
 
 <style>
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+  background:white;
+  border-bottom:1px solid #eee;
+  position:sticky;
+  top:0;
+}
 
-/* HEADER */
+.nav-left, .nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size:22px;
+  color:#111;
+}
+
+.icon-btn{
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background:#f5f5f5;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.icon-btn i{
+  width:18px;
+  height:18px;
+  stroke:currentColor;
+}
+
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
 .header{
   padding: 30px 40px 10px;
 }
@@ -96,16 +145,73 @@ button:active{
   padding:60px;
   color:#777;
 }
+.toast{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+  padding:12px 18px;
+  border-radius:25px;
+  font-weight:600;
+  font-size:14px;
 
+  opacity:0;
+  pointer-events:none;
+
+  box-shadow:0 12px 30px rgba(0,0,0,0.15);
+  transition:all 0.25s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.delete-btn{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  border-radius:30px;
+  border:1px solid #ff4d4f;
+  background:white;
+  color:#ff4d4f;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.delete-btn:hover{
+  background:#ff4d4f;
+  color:white;
+}
 </style>
 </head>
 
 <body>
+<body>
 
+<div class="nav">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <button class="icon-btn" onclick="back()" title="Back">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
+
+  <!-- CENTER -->
+  <div class="nav-center">
+    ZEVL ⚡
+  </div>
+
+  <!-- RIGHT -->
+  <div class="nav-right"></div>
+
+</div>
 <!-- HEADER -->
 <div class="header">
-  <h1>My Wishlist ❤️</h1>
-  <p>Saved items you’re interested in</p>
+  <h1>Your Wishlist</h1>
+  <p>Items you've saved for later</p>
 </div>
 
 <!-- GRID -->
@@ -145,12 +251,69 @@ container.innerHTML+=`
 Move to Cart
 </button>
 
+<button class="delete-btn" data-id="${p.id}" onclick="removeFromWishlist(${p.id}, this)">
+  <i data-lucide="trash-2"></i>
+</button>
+
 </div>
 `;
 });
+
+lucide.createIcons(); // ✅ IMPORTANT
+
 }catch{
 alert("Failed to load wishlist");
 }
+}
+function showToast(msg){
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+async function removeFromWishlist(id, btn){
+  try {
+    const res = await fetch("/api/wishlist/remove",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:"Bearer " + token
+      },
+      body: JSON.stringify({ product_id: id })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      showToast(data.message || "Failed to remove item");
+      return;
+    }
+
+    const card = btn.closest(".card");
+
+    card.style.transition = "0.3s";
+    card.style.opacity = "0";
+    card.style.transform = "scale(0.9)";
+
+    setTimeout(() => {
+      card.remove();
+
+      if(document.querySelectorAll(".card").length === 0){
+        document.getElementById("wishlist").innerHTML =
+          `<div class="empty">No items in wishlist</div>`;
+      }
+    }, 300);
+
+    showToast("Removed from wishlist");
+
+  } catch (err) {
+    console.log(err);
+    showToast("Failed to remove item");
+  }
 }
 
 // MOVE TO CART
@@ -165,7 +328,7 @@ Authorization:"Bearer "+token
 body:JSON.stringify({product_id:id})
 });
 
-alert("Moved to cart");
+showToast("Added to cart successfully");
 loadWishlist();
 
 }catch{
@@ -175,7 +338,11 @@ alert("Error moving to cart");
 
 loadWishlist();
 
-</script>
+function back(){
+  window.location = "buyer-dashboard.html";
+}
 
+</script>
+<div id="toast" class="toast"></div>
 </body>
 </html>

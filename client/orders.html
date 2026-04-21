@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Orders</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+  body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
+.nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+
+  border-bottom:1px solid rgba(255,255,255,0.08);
+
+  position: sticky;
+  top:0;
+}
+
+.nav-center{
+  font-weight:700;
+  font-size:18px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+  border:none;
+
+  background: rgba(255,255,255,0.08);
+  cursor:pointer;
+}
+
+.icon-btn svg{
+  stroke:white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(22,199,132,0.05), transparent 65%);
+  pointer-events: none;
+}
+
+    .container{
+      padding:30px;
+    }
+
+  .order-card{
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+
+  padding:18px;
+  border-radius:16px;
+
+  margin-bottom:15px;
+
+  backdrop-filter: blur(10px);
+
+  transition:0.25s;
+
+  opacity:0;
+  transform: translateY(10px);
+}
+
+.order-card.show{
+  opacity:1;
+  transform: translateY(0);
+}
+
+.order-card:hover{
+  transform: translateY(-3px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+    h2{
+      margin-bottom:20px;
+    }
+    .stats{
+  display:flex;
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.stat{
+  flex:1;
+  display:flex;
+  gap:10px;
+  align-items:center;
+
+  padding:15px;
+
+  border-radius:14px;
+
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.stat svg{
+  width:22px;
+  stroke:#16c784;
+}
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:12px 14px;
+  margin-bottom:20px;
+
+  border-radius:12px;
+
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.search-box input{
+  flex:1;
+
+  background:transparent;
+  border:none;
+  outline:none;
+
+  color:white;
+  font-size:14px;
+}
+
+.search-box svg{
+  width:18px;
+  height:18px;
+  stroke:#aaa;
+  flex-shrink:0; /* 🔥 THIS fixes icon squish/misalignment */
+}
+
+.search-box:focus-within{
+  border-color:#16c784;
+  box-shadow:0 0 0 2px rgba(22,199,132,0.15);
+}
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.actions button{
+  flex:1;
+  padding:6px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12px;
+  background:#1f2937;
+  color:white;
+}
+
+.actions button:hover{
+  background:#16c784;
+}
+  </style>
+</head>
+
+<body>
+ <div class="nav">
+
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="icon-btn" onclick="goBack()">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
+
+  <div class="nav-center">📦 Orders Dashboard</div>
+
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="icon-btn" onclick="goDashboard()">
+      <i data-lucide="home"></i>
+    </button>
+  </div>
+
+</div>
+
+<div class="container">
+
+  <h2>📦 Customer Orders</h2>
+
+<div class="search-box">
+  <i data-lucide="search"></i>
+  <input id="search" placeholder="Search buyer..." oninput="filterOrders()" />
+</div>
+
+  <div class="stats">
+  <div class="stat">
+    <i data-lucide="wallet"></i>
+    <div><b id="totalRevenue">ZMW 0</b><br>Total Revenue</div>
+  </div>
+
+  <div class="stat">
+    <i data-lucide="package"></i>
+    <div><b id="totalOrders">0</b><br>Orders</div>
+  </div>
+
+  <div class="stat">
+    <i data-lucide="clock"></i>
+    <div><b id="pendingOrders">0</b><br>Pending</div>
+  </div>
+</div>
+
+  <div id="orders">Loading...</div>
+
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+async function loadOrders(){
+
+  const box = document.getElementById("orders");
+
+  try{
+    const res = await fetch("/api/seller/orders",{
+      headers:{Authorization:"Bearer "+token}
+    });
+
+    const data = await res.json();
+    let totalRevenue = 0;
+let totalOrders = data.length;
+let pending = 0;
+
+    if(!data.length){
+      box.innerHTML = "<p>No orders yet</p>";
+      return;
+    }
+
+    box.innerHTML = "";
+
+  data.forEach((o, index)=>{
+
+  totalRevenue += o.total || 0;
+  if(!o.status || o.status === "pending") pending++;
+
+  const div = document.createElement("div");
+  div.className = "order-card";
+
+  div.innerHTML = `
+    <div><i data-lucide="user"></i> ${o.buyer_name}</div>
+    <div><i data-lucide="phone"></i> ${o.phone}</div>
+    <div><i data-lucide="map-pin"></i> ${o.address}</div>
+
+    <br>
+
+    <div><b>Items:</b> ${o.items}</div>
+    <div><b>Total:</b> ZMW ${o.total || 0}</div>
+    <div><b>Status:</b> ${o.status || "pending"}</div>
+
+    <div class="actions">
+      <button onclick="updateStatus(${o.id}, 'processing')">Processing</button>
+      <button onclick="updateStatus(${o.id}, 'shipped')">Shipped</button>
+      <button onclick="updateStatus(${o.id}, 'delivered')">Delivered</button>
+    </div>
+  `;
+
+  box.appendChild(div);
+
+  setTimeout(()=>{
+    div.classList.add("show");
+  }, index * 80);
+
+});
+
+document.getElementById("totalRevenue").innerText = "ZMW " + totalRevenue;
+document.getElementById("totalOrders").innerText = totalOrders;
+document.getElementById("pendingOrders").innerText = pending;
+
+lucide.createIcons(); // ✅ re-render icons after DOM update
+  }catch(err){
+    box.innerHTML = "Failed to load orders";
+  }
+}
+function filterOrders(){
+  const input = document.getElementById("search").value.toLowerCase();
+  const cards = document.querySelectorAll(".order-card");
+
+  cards.forEach(card=>{
+    const text = card.innerText.toLowerCase();
+    card.style.display = text.includes(input) ? "" : "none";
+  });
+}
+async function updateStatus(orderId, status){
+
+  await fetch(`/api/seller/orders/${orderId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type":"application/json",
+      Authorization:"Bearer "+token
+    },
+    body: JSON.stringify({ status })
+  });
+  
+  lucide.createIcons();
+
+  loadOrders(); // refresh UI
+}
+
+function goBack(){
+  window.history.back();
+}
+
+function goDashboard(){
+  window.location = "/products.html";
+}
+
+loadOrders();
+lucide.createIcons(); // ✅ render icons on first load
+</script>
+
+</body>
+</html>

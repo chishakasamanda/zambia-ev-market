@@ -1,105 +1,388 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
-<title>Product Details</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<title>ZEVL Product</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+  --ev-green:#16c784;
+}
+
 body{
-margin:0;
-font-family:Segoe UI;
-background:#0f2027;
-color:white;
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(180deg,#ffffff 0%,#f4f6f8 40%,#eef1f4 100%);
 }
 
-/* CONTAINER */
+/* NAV */
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+  background:white;
+  border-bottom:1px solid #eee;
+  position:sticky;
+  top:0;
+  z-index:9999;
+}
+
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size:24px;
+}
+
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.icon-btn{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:none;
+  background:#f5f5f5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
+
+i[data-lucide]{
+  width:24px;
+  height:24px;
+  stroke-width:2.2;
+}
+
+/* SEARCH */
+.search-hidden{
+  display:none;
+  padding:10px 14px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  width:220px;
+}
+
+.search-active{
+  display:block;
+}
+
+/* DROPDOWN */
+.dropdown{ position:relative; }
+
+.dropbtn{
+  background:#111;
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+.dropdown-content{
+  display:none;
+  position:absolute;
+  right:0;
+  top:50px;
+  background:white;
+  border-radius:12px;
+  border:1px solid #eee;
+  min-width:180px;
+}
+
+.dropdown-content a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  cursor:pointer;
+}
+
+.dropdown-content a:hover{
+  background:#f5f5f5;
+}
+
+.show{ display:block; }
+
+/* CONTENT */
 .container{
-max-width:1000px;
-margin:auto;
-padding:30px;
+  max-width:1100px;
+  margin:auto;
+  padding:30px;
 }
 
-/* MAIN LAYOUT */
 .product-box{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
-background:#1c2b36;
-padding:20px;
-border-radius:12px;
+  display:flex;
+  gap:30px;
+  flex-wrap:wrap;
+  background:white;
+  padding:25px;
+  border-radius:18px;
+  border:1px solid #eee;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
 }
 
-/* IMAGE */
 .product-img{
-flex:1;
-min-width:280px;
+  flex:1;
+  min-width:280px;
 }
 
 .product-img img{
-width:100%;
-border-radius:10px;
-object-fit:cover;
+  width:100%;
+  border-radius:12px;
+  height:320px;
+  object-fit:cover;
 }
 
-/* INFO */
 .product-info{
-flex:1;
-min-width:280px;
+  flex:1;
+  min-width:280px;
 }
 
 .price{
-font-size:22px;
-margin-top:10px;
-color:#00ffcc;
+  font-size:22px;
+  margin-top:10px;
+  color:var(--ev-green);
 }
 
 /* BUTTONS */
 .actions{
-margin-top:20px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+  margin-top:20px;
+  display:flex;
+  gap:12px;
 }
 
-button{
-padding:10px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
+.btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 16px;
+  border-radius:25px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
 }
 
-.cart-btn{
-background:#00ffcc;
-color:black;
+.cart-btn{ background:#111; color:white; }
+.wish-btn{ background:var(--ev-green); color:white; }
+.msg-btn{ background:#f5f5f5; }
+
+.section-title{
+  margin:40px 0 15px;
+  font-size:20px;
+  font-weight:600;
 }
 
-.wish-btn{
-background:#ff4d6d;
-color:white;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
 }
 
-/* SELLER */
-.seller{
-margin-top:20px;
-background:#243b4a;
-padding:15px;
-border-radius:10px;
+.card{
+  background:white;
+  border-radius:16px;
+  padding:15px;
+  border:1px solid #eee;
+  cursor:pointer;
 }
 
-/* LOADING */
-.loading{
-text-align:center;
-padding:50px;
+.card img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:10px;
 }
+
+.img-wrap{
+  position:relative;
+}
+
+/* overlay buttons */
+.icon-overlay{
+  position:absolute;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.icon-overlay:hover{
+  transform:scale(1.1);
+  background:white;
+}
+
+/* positions */
+.top-right{
+  top:10px;
+  right:10px;
+}
+
+.bottom-right{
+  bottom:10px;
+  right:10px;
+}
+
+/* icon size */
+.icon-overlay i{
+  width:20px;
+  height:20px;
+}
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  
+  background:#111;
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
+  
+  font-size:14px;
+  font-weight:500;
+  
+  opacity:0;
+  transition:0.25s ease;
+  z-index:99999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(-6px);
+}
+.review-item{
+  padding:12px 0;
+  border-bottom:1px solid #eee;
+}
+
+.review-item:last-child{
+  border-bottom:none;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
+<div class="nav">
+
+<div class="nav-left">
+
+<button class="icon-btn" onclick="goBack()">
+<i data-lucide="arrow-left"></i>
+</button>
+
+<button class="icon-btn" onclick="toggleSearch()">
+<i data-lucide="search"></i>
+</button>
+
+<input id="searchInput" class="search-hidden" placeholder="Search products...">
+
+</div>
+
+<div class="nav-center">
+ZEVL ⚡
+</div>
+
+<div class="nav-right">
+
+<div class="dropdown">
+<button class="dropbtn" onclick="toggleMenu()">Menu</button>
+
+<div id="menu" class="dropdown-content">
+<a onclick="goCart()"><i data-lucide="shopping-cart"></i> Cart</a>
+<a onclick="goWishlist()"><i data-lucide="heart"></i> Wishlist</a>
+<a onclick="goProfile()"><i data-lucide="user"></i> Profile</a>
+<a onclick="logout()"><i data-lucide="log-out"></i> Logout</a>
+</div>
+</div>
+
+<button class="icon-btn" onclick="goMap()">
+<i data-lucide="map"></i>
+</button>
+
+<button class="icon-btn" onclick="goCommunity()">
+<i data-lucide="globe"></i>
+</button>
+
+</div>
+
+</div>
+
+<!-- CONTENT -->
 <div class="container">
 
-<div id="product" class="loading">Loading product...</div>
+<div id="product">Loading product...</div>
+<div class="card" style="margin-top:30px; padding:20px;">
+
+  <h3 style="margin:0 0 10px;">Write a Review</h3>
+
+  <div style="display:flex; gap:8px; margin-bottom:10px;">
+    <select id="rating" style="padding:8px;border-radius:10px;">
+      <option value="5">★★★★★ (5)</option>
+      <option value="4">★★★★ (4)</option>
+      <option value="3">★★★ (3)</option>
+      <option value="2">★★ (2)</option>
+      <option value="1">★ (1)</option>
+    </select>
+  </div>
+
+  <textarea id="comment"
+    placeholder="Write your experience..."
+    style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;resize:none;height:80px;">
+  </textarea>
+
+  <button onclick="submitReview()"
+    style="
+      margin-top:10px;
+      padding:10px 14px;
+      border:none;
+      border-radius:20px;
+      background:#16c784;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+    ">
+    Submit Review
+  </button>
+
+</div>
+
+<div class="section-title">⭐ Customer Reviews</div>
+<div class="card" id="reviewList">Loading...</div>
+
+<div class="section-title">Other Products</div>
+<div id="others" class="grid"></div>
 
 </div>
 
@@ -110,18 +393,18 @@ if(!token) window.location="login.html";
 
 const id = new URLSearchParams(window.location.search).get("id");
 
-// ================= LOAD PRODUCT =================
+let allProducts = [];
+
+/* ================= PRODUCT ================= */
 async function loadProduct(){
-try{
+
 const res = await fetch("/api/products/"+id,{
-headers:{ Authorization:"Bearer "+token }
+headers:{Authorization:"Bearer "+token}
 });
-
 const p = await res.json();
-
-if(!p || !p.id){
-document.getElementById("product").innerHTML="Product not found";
-return;
+if(!p) {
+  document.getElementById("product").innerHTML = "Product not found";
+  return;
 }
 
 document.getElementById("product").innerHTML=`
@@ -137,69 +420,223 @@ document.getElementById("product").innerHTML=`
 
 <div class="price">ZMW ${p.price}</div>
 
-<p>${p.description || "No description available"}</p>
+<p>${p.description || ""}</p>
 
 <p><strong>Stock:</strong> ${p.stock}</p>
 
 <div class="actions">
-<button class="cart-btn" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
-<button class="wish-btn" onclick="addToWishlist(${p.id})">❤️ Wishlist</button>
+
+<button class="btn cart-btn" onclick="addToCart(${p.id})">
+<i data-lucide="shopping-cart"></i> Cart
+</button>
+
+<button class="btn wish-btn" onclick="addToWishlist(${p.id})">
+<i data-lucide="heart"></i> Wishlist
+</button>
+
+<button class="btn msg-btn" onclick="startChat(${p.seller_id}, ${p.id}, '${p.seller_name}', '${p.name.replace(/'/g,"\\'")}')">
+<i data-lucide="message-circle"></i> Message
+</button>
+
 </div>
 
 <div class="seller">
-<h3>Seller Info</h3>
-<p><strong>Name:</strong> ${p.seller_name}</p>
-<p><strong>Phone:</strong> ${p.phone || "N/A"}</p>
-<p><strong>Address:</strong> ${p.address || "N/A"}</p>
+<h3>Seller</h3>
+<p>${p.seller_name}</p>
 </div>
 
 </div>
-
+</div>
 </div>
 `;
-
-}catch(err){
-document.getElementById("product").innerHTML="Failed to load product";
-}
+lucide.createIcons();
 }
 
-// ================= ACTIONS =================
+/* ================= SEARCH (FIXED) ================= */
+document.getElementById("searchInput").addEventListener("input", function(e){
+
+const value = e.target.value.toLowerCase();
+
+if(value === ""){
+renderOthers(allProducts);
+return;
+}
+
+const filtered = allProducts.filter(p =>
+p.name.toLowerCase().includes(value) ||
+(p.description && p.description.toLowerCase().includes(value))
+);
+
+renderOthers(filtered);
+});
+
+/* ================= OTHER PRODUCTS ================= */
+async function loadOthers(){
+const res = await fetch("/api/products",{
+headers:{Authorization:"Bearer "+token}
+});
+
+allProducts = await res.json();
+renderOthers(allProducts);
+}
+
+function renderOthers(data){
+  const container = document.getElementById("others");
+  container.innerHTML = "";
+
+  const filtered = data.filter(p => p.id != id).slice(0,6);
+
+  filtered.forEach(p=>{
+    container.innerHTML += `
+      <div class="card" onclick="openProduct(${p.id})">
+
+        <div class="img-wrap">
+
+          <img src="${p.image_url}">
+
+          <!-- Wishlist -->
+          <button class="icon-overlay top-right"
+            onclick="event.stopPropagation(); addToWishlist(${p.id})">
+            <i data-lucide="heart"></i>
+          </button>
+
+          <!-- Cart -->
+          <button class="icon-overlay bottom-right"
+            onclick="event.stopPropagation(); addToCart(${p.id})">
+            <i data-lucide="shopping-cart"></i>
+          </button>
+
+        </div>
+
+        <h4>${p.name}</h4>
+        <p>ZMW ${p.price}</p>
+
+      </div>
+    `;
+  });
+
+  lucide.createIcons();
+}
+function openProduct(productId){
+  window.location.href = "product-view.html?id=" + productId;
+}
+
+/* ================= ACTIONS ================= */
 async function addToCart(id){
-try{
-await fetch("/api/cart/add",{
-method:"POST",
-headers:{
+await fetch("/api/cart/add",{method:"POST",headers:{
 "Content-Type":"application/json",
 Authorization:"Bearer "+token
-},
-body:JSON.stringify({product_id:id})
-});
-alert("Added to cart");
-}catch{
-alert("Cart failed");
-}
+},body:JSON.stringify({product_id:id})});
+showToast("Added to cart successfully");
 }
 
 async function addToWishlist(id){
+await fetch("/api/wishlist/add",{method:"POST",headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},body:JSON.stringify({product_id:id})});
+showToast("Added to wishlist successfully");
+}
+function showToast(message){
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+/* NAV */
+function goBack(){ window.history.back(); }
+function toggleSearch(){ document.getElementById("searchInput").classList.toggle("search-active"); }
+function toggleMenu(){ document.getElementById("menu").classList.toggle("show"); }
+function goCart(){ window.location="cart.html"; }
+function goWishlist(){ window.location="wishlist.html"; }
+function goProfile(){ window.location="buyer-profile.html"; }
+function goMap(){ window.location="map.html"; }
+function goCommunity(){ window.location="community.html"; }
+function logout(){ localStorage.clear(); window.location="login.html"; }
+
+function startChat(sellerId, productId, sellerName, productName){
+
+  window.location =
+    "chat.html?seller_id=" + sellerId +
+    "&product_id=" + productId +
+    "&seller_name=" + encodeURIComponent(sellerName) +
+    "&product_name=" + encodeURIComponent(productName);
+}
+
+async function loadReviews(){
+  try {
+    const res = await fetch("/api/reviews/" + id, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const data = await res.json();
+
+    const box = document.getElementById("reviewList");
+
+    if (!Array.isArray(data) || data.length === 0) {
+      box.innerHTML = "<p>No reviews yet</p>";
+      return;
+    }
+
+    box.innerHTML = "";
+
+    data.forEach(r => {
+      box.innerHTML += `
+        <div class="review-item">
+          <b>${r.name}</b>
+          <span style="color:#f5a623"> ★ ${r.rating}/5</span><br>
+          <span style="color:#555">${r.comment || ""}</span>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    document.getElementById("reviewList").innerHTML = "<p>Failed to load reviews</p>";
+  }
+}
+async function submitReview(){
+
+const rating = document.getElementById("rating").value;
+const comment = document.getElementById("comment").value.trim();
+
+if(!rating || !comment){
+  alert("Please add rating and comment");
+  return;
+}
+
 try{
-await fetch("/api/wishlist/add",{
+await fetch("/api/reviews", {
 method:"POST",
 headers:{
 "Content-Type":"application/json",
 Authorization:"Bearer "+token
 },
-body:JSON.stringify({product_id:id})
+body:JSON.stringify({
+product_id:id,
+rating,
+comment
+})
 });
-alert("Added to wishlist");
-}catch{
-alert("Wishlist failed");
-}
-}
 
-// INIT
+document.getElementById("comment").value = "";
+
+loadReviews();
+
+showToast("Review submitted successfully");
+
+}catch(err){
+alert("Failed to submit review");
+}
+}
 loadProduct();
-
+loadReviews();
+loadOthers();
 </script>
-
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast"></div>
 </body>
 </html>

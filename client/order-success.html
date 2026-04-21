@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<title>Order Placed</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:'Poppins', sans-serif;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+
+  background:
+    radial-gradient(circle at 20% 20%, #f8fafc 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, #eef2f6 0%, transparent 55%),
+    linear-gradient(180deg, #ffffff 0%, #f3f5f7 50%, #e9edf2 100%);
+}
+
+.card{
+  background: rgba(255,255,255,0.9);
+  padding:40px;
+  border-radius:20px;
+  width:360px;
+  text-align:center;
+
+  border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+
+  animation: pop 0.4s ease;
+}
+
+@keyframes pop{
+  from{ transform: scale(0.9); opacity:0; }
+  to{ transform: scale(1); opacity:1; }
+}
+
+h1{
+  margin-bottom:10px;
+  color:#16c784;
+}
+
+p{
+  color:#555;
+  font-size:14px;
+  margin-bottom:25px;
+}
+
+.badge{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  cursor:pointer;
+  font-weight:600;
+
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+
+  transition:0.25s ease;
+}
+
+button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+}
+
+.small-text{
+  margin-top:15px;
+  font-size:13px;
+  color:#777;
+}
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.2s;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:white;
+  padding:25px;
+  border-radius:16px;
+  width:320px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="badge">🎉</div>
+
+<h1>Order Placed!</h1>
+
+<p>
+Your order has been successfully received.<br>
+Our delivery agent will contact you soon.
+</p>
+
+<button onclick="goHome()">Continue Shopping</button>
+
+<button onclick="openSummary()" style="margin-top:10px; background:#111;">
+View Order Summary
+</button>
+
+<button onclick="openEdit()" style="margin-top:10px; background:#555;">
+Edit Address
+</button>
+
+<div class="small-text">
+ZEVL⚡
+</div>
+
+</div>
+<script>
+
+const agents = ["John M.", "Kelvin Z.", "Chanda B."];
+
+let currentOrderId = null;
+let currentOrder = null;
+
+// ================= LOAD ORDER =================
+async function loadOrder(){
+  try{
+    const res = await fetch("/api/orders", {
+      headers:{ Authorization:"Bearer " + localStorage.getItem("token") }
+    });
+
+    const data = await res.json();
+    const o = Array.isArray(data) ? data[data.length - 1] : data;
+
+    if(!o || !o.id){
+      return;
+    }
+
+    if(!o.agent){
+      o.agent = agents[Math.floor(Math.random()*agents.length)];
+    }
+
+    currentOrderId = o.id;
+    currentOrder = o;
+
+  }catch(err){
+    console.error("Order load failed", err);
+  }
+}
+
+// ================= ORDER SUMMARY =================
+async function openSummary(){
+
+  if(!currentOrder){
+    await loadOrder();
+  }
+
+  if(!currentOrder){
+    alert("No order found");
+    return;
+  }
+
+  const deliveryAgent = currentOrder.agent;
+  const eta = currentOrder.eta || "30 - 60 mins";
+
+  // ✅ FIX: build items FIRST (outside template)
+  const itemsHTML = Array.isArray(currentOrder.items)
+    ? currentOrder.items.map(i =>
+        `<li>${i.name} x ${i.quantity} — ZMW ${i.price * i.quantity}</li>`
+      ).join("")
+    : `<li>${currentOrder.items || "No items available"}</li>`;
+
+  document.getElementById("modal").classList.add("show");
+
+  document.getElementById("modalContent").innerHTML = `
+    <h3 style="margin-bottom:10px;">Order Details</h3>
+
+    <p><b>Order ID:</b> #${currentOrder.id}</p>
+    <p><b>Status:</b> 
+      <span style="color:#16c784;">
+        ${currentOrder.status || "Processing"}
+      </span>
+    </p>
+
+    <hr>
+
+    <p><b>Customer:</b> ${currentOrder.name}</p>
+    <p><b>Phone:</b> ${currentOrder.phone}</p>
+    <p><b>Address:</b> ${currentOrder.address}</p>
+
+    <hr>
+
+    <p><b>Delivery Service:</b> Yango</p>
+    <p><b>Delivery Agent:</b> ${deliveryAgent}</p>
+    <p><b>Estimated Delivery:</b> ${eta}</p>
+
+    <hr>
+
+    <p><b>Payment:</b> ${currentOrder.payment_method || "Cash on Delivery"}</p>
+
+    <hr>
+
+    <p><b>Items:</b></p>
+    <ul style="padding-left:18px;">
+      ${itemsHTML}
+    </ul>
+
+    <button onclick="closeModal()" style="margin-top:15px;">Close</button>
+  `;
+}
+// ================= EDIT =================
+function openEdit(){
+
+  if(!currentOrder){
+    alert("Load order first");
+    return;
+  }
+
+  document.getElementById("modal").classList.add("show");
+
+  document.getElementById("modalContent").innerHTML = `
+    <h3>Edit Address</h3>
+
+    <input id="name" value="${currentOrder.name}">
+    <br><br>
+
+    <input id="phone" value="${currentOrder.phone}">
+    <br><br>
+
+    <input id="address" value="${currentOrder.address}">
+    <br><br>
+
+    <button onclick="saveAddress()">Save</button>
+    <button onclick="closeModal()" style="margin-top:5px;background:#999;">Cancel</button>
+  `;
+}
+
+// ================= SAVE =================
+async function saveAddress(){
+
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+
+  await fetch(`/api/orders/${currentOrderId}`, {
+    method:"PUT",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:"Bearer "+localStorage.getItem("token")
+    },
+    body: JSON.stringify({ name, phone, address })
+  });
+
+  alert("Updated successfully");
+  await loadOrder();
+  closeModal();
+}
+
+// ================= UI =================
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+function goHome(){
+  window.location = "buyer-dashboard.html";
+}
+
+// ================= INIT =================
+window.onload = () => {
+  if(!localStorage.getItem("token")){
+    window.location = "login.html";
+  }
+  loadOrder();
+};
+
+</script>
+
+
+<div id="modal" class="modal">
+  <div class="modal-box" id="modalContent"></div>
+</div>
+</body>
+</html>

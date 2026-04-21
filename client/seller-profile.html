@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<title>Seller Profile</title>
+
+<style>
+body{
+  font-family:Poppins,sans-serif;
+  margin:0;
+  background:#f6f7fb;
+}
+
+.container{
+  max-width:520px;
+  margin:40px auto;
+  padding:25px;
+  background:white;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* HEADER */
+.header h2{
+  margin:0;
+}
+
+.header p{
+  margin-top:5px;
+  color:#666;
+  font-size:14px;
+}
+
+/* SECTION BLOCKS */
+.section{
+  margin-top:20px;
+  padding:15px;
+  border:1px solid #eee;
+  border-radius:14px;
+  background:#fafafa;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+  color:#333;
+}
+
+/* INPUTS */
+input{
+  width:100%;
+  padding:11px;
+  margin-bottom:10px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  outline:none;
+  transition:0.2s;
+  background:white;
+}
+
+input:focus{
+  border-color:#16c784;
+  box-shadow:0 0 0 3px rgba(22,199,132,0.15);
+}
+
+/* DOCUMENT PREVIEW (IMPORTANT CHANGE) */
+.doc-preview{
+  width:100%;
+  height:180px;
+  object-fit:contain;
+  border-radius:12px;
+  border:2px dashed #ddd;
+  background:white;
+  margin-bottom:10px;
+}
+
+/* HINT TEXT */
+.hint{
+  font-size:12px;
+  color:#777;
+  margin-top:0;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.25s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+}
+</style>
+</head>
+<div class="container">
+
+  <div class="header">
+    <h2>Seller Verification</h2>
+    <p>Complete your business details for account approval</p>
+  </div>
+
+  <!-- DOCUMENT UPLOAD -->
+  <div class="section">
+    <label>Verification Document</label>
+
+    <img id="preview" class="doc-preview">
+
+    <p class="hint">
+      Upload business license / ID / tax document (used for verification only)
+    </p>
+
+    <input type="file" id="image">
+  </div>
+
+  <!-- FORM -->
+  <div class="section">
+    <label>Full Name</label>
+    <input id="name" placeholder="Enter full name">
+
+    <label>Shop / Business Name</label>
+    <input id="shop_name" placeholder="Enter shop name">
+
+    <label>Phone Number</label>
+    <input id="phone" placeholder="Enter phone number">
+  </div>
+
+  <button onclick="saveProfile()">Save & Continue</button>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+if(!token) window.location="login.html";
+
+// ================= LOAD PROFILE =================
+async function loadProfile(){
+
+  const res = await fetch("/api/seller/profile", {
+    headers: { Authorization: "Bearer " + token }
+  });
+
+  const data = await res.json();
+
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("shop_name").value = data.shop_name || "";
+  document.getElementById("phone").value = data.phone || "";
+
+  if(data.profile_image){
+    document.getElementById("preview").src = data.profile_image;
+  } else {
+    document.getElementById("preview").src = "https://via.placeholder.com/90";
+  }
+}
+
+// ================= SAVE PROFILE =================
+async function saveProfile(){
+
+  const fd = new FormData();
+
+  fd.append("name", document.getElementById("name").value);
+  fd.append("shop_name", document.getElementById("shop_name").value);
+  fd.append("phone", document.getElementById("phone").value);
+
+  const file = document.getElementById("image").files[0];
+  if(file) fd.append("image", file);
+
+  try {
+    const res = await fetch("/api/seller/profile", {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      body: fd
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      alert(data.message || "Failed to save profile");
+      return;
+    }
+
+    // ✅ SUCCESS POPUP
+    alert("Profile saved successfully ✔");
+
+    // ✅ redirect after short delay
+    setTimeout(() => {
+      window.location = "products.html";
+    }, 500);
+
+  } catch (err) {
+    console.log(err);
+    alert("Something went wrong");
+  }
+}
+
+loadProfile();
+
+</script>
+
+</body>
+</html>

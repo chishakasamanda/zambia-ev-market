@@ -2,17 +2,18 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <title>Cart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+<style>
 
 /* PAGE WRAPPER */
 .container{
   padding:40px;
 }
 
-/* NAVBAR MATCH HOME */
+/* NAVBAR */
 .navbar{
   display:flex;
   justify-content:space-between;
@@ -27,6 +28,32 @@
   font-weight:700;
   color:#00c896;
 }
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+  background:white;
+  border-bottom:1px solid #eee;
+  position:sticky;
+  top:0;
+}
+
+.nav-left, .nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:0.5px;
+  color:#111;
+}
 
 .nav-btn{
   background:#111;
@@ -36,22 +63,27 @@
   border:none;
   cursor:pointer;
 }
+.nav-btn{
+  background:#111;
+  color:white;
+  padding:10px 18px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+}
 
-/* CART ITEM (MODERN CARD STYLE) */
+/* CART ITEM */
 .item{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:20px;
-
   background:rgba(255,255,255,0.85);
   padding:20px;
   border-radius:18px;
   margin-bottom:15px;
-
   border:1px solid rgba(0,0,0,0.05);
   backdrop-filter:blur(8px);
-
   transition:0.25s ease;
 }
 
@@ -60,7 +92,6 @@
   box-shadow:0 10px 25px rgba(0,0,0,0.08);
 }
 
-/* LEFT SIDE */
 .item-left{
   display:flex;
   gap:15px;
@@ -74,7 +105,6 @@
   border-radius:10px;
 }
 
-/* PRODUCT TEXT */
 .item-left h4{
   margin:0;
 }
@@ -98,12 +128,20 @@
   cursor:pointer;
   background:#f3f5f7;
   font-weight:600;
-
-  transition:0.2s;
 }
 
 .controls button:hover{
   background:#e4e7eb;
+}
+
+/* DELETE BUTTON */
+.controls .delete-btn{
+  background:#ff4d4d;
+  color:white;
+}
+
+.controls .delete-btn:hover{
+  background:#e63e3e;
 }
 
 /* TOTAL */
@@ -120,12 +158,10 @@
   width:100%;
   border:none;
   border-radius:30px;
-
   background:linear-gradient(135deg,#16c784,#00c2ff);
   color:white;
   font-weight:600;
   cursor:pointer;
-
   transition:0.25s ease;
 }
 
@@ -134,29 +170,88 @@
   box-shadow:0 10px 25px rgba(22,199,132,0.25);
 }
 
-  </style>
+/* HIDDEN */
+.hidden{
+  display:none;
+}
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background:#f5f5f5;
+  cursor:pointer;
+  transition:0.2s;
+}
+.icon-btn:hover{
+  background:#111;
+  color:white;
+}
+
+.checkout-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+
+.checkout-btn{
+  padding:12px 30px;
+  width:auto;            /* removes full width */
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.25s ease;
+}
+
+.checkout-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(22,199,132,0.25);
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div class="logo">⚡ Zambia EV Market</div>
-  <button class="nav-btn" onclick="back()">← Back</button>
+<div class="nav">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+<button class="icon-btn" onclick="back()" title="Back">
+  <i data-lucide="arrow-left"></i>
+</button>
+  </div>
+
+  <!-- CENTER -->
+  <div class="nav-center">
+    ZEVL ⚡
+  </div>
+
+  <!-- RIGHT -->
+  <div class="nav-right"></div>
+
 </div>
 
+<!-- PAGE CONTENT WRAPPER -->
 <div class="container">
 
-<h2>Your Cart 🛒</h2>
+<h2 style="display:flex; align-items:center; gap:8px;">
+  Your Cart
+</h2>
 
-<div id="cartList"></div>
+  <div id="cartList"></div>
+   <div class="total" id="total"></div>
 
-<div class="total" id="total"></div>
-
-<button class="checkout-btn" onclick="goToCheckout()">
-Proceed to Checkout
-</button>
-
+ <div class="checkout-wrapper hidden" id="checkoutBtn">
+  <button class="checkout-btn" onclick="goToCheckout()">
+    Proceed to Checkout
+  </button>
 </div>
 
 <script>
@@ -164,16 +259,23 @@ Proceed to Checkout
 const token = localStorage.getItem("token");
 if(!token) window.location="login.html";
 
+let currentCart = [];
+
+// ================= NAV =================
 function back(){
   window.location="buyer-dashboard.html";
 }
 
-// GO TO CHECKOUT
+// ================= CHECKOUT =================
 function goToCheckout(){
+  if(currentCart.length === 0){
+    alert("Your cart is empty");
+    return;
+  }
   window.location = "checkout.html";
 }
 
-// LOAD CART
+// ================= LOAD CART =================
 async function loadCart(){
 try{
 
@@ -184,17 +286,25 @@ headers:{ Authorization:"Bearer "+token }
 if(!res.ok) throw new Error();
 
 const data = await res.json();
+currentCart = data;
 
 const list = document.getElementById("cartList");
+const checkoutBtn = document.getElementById("checkoutBtn");
+
 list.innerHTML = "";
 
 let total = 0;
 
+// EMPTY
 if(data.length === 0){
-list.innerHTML = "<p>Your cart is empty</p>";
-document.getElementById("total").innerText = "";
-return;
+  list.innerHTML = "<p>Your cart is empty</p>";
+  document.getElementById("total").innerText = "";
+document.getElementById("checkoutBtn").classList.remove("hidden");
+  return;
 }
+
+// SHOW BUTTON
+checkoutBtn.classList.remove("hidden");
 
 data.forEach(p=>{
 
@@ -215,11 +325,16 @@ list.innerHTML += `
     <button onclick="updateQty(${p.id}, ${p.quantity-1})">−</button>
     <span>${p.quantity}</span>
     <button onclick="updateQty(${p.id}, ${p.quantity+1})">+</button>
+   <button class="delete-btn" onclick="removeItem(${p.id})" title="Remove item">
+  <i data-lucide="trash-2"></i>
+</button>
   </div>
 
 </div>
 `;
 });
+
+lucide.createIcons(); 
 
 document.getElementById("total").innerText = "Total: ZMW " + total;
 
@@ -229,7 +344,7 @@ alert("Failed to load cart");
 }
 }
 
-// UPDATE QUANTITY
+// ================= UPDATE =================
 async function updateQty(id, qty){
 
 if(qty < 1) return;
@@ -249,7 +364,29 @@ quantity:qty
 loadCart();
 }
 
+// ================= REMOVE =================
+async function removeItem(id){
+
+if(!confirm("Remove this item from cart?")) return;
+
+await fetch("/api/cart/update",{
+method:"PUT",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({
+product_id:id,
+quantity:0
+})
+});
+
 loadCart();
+}
+
+// INIT
+loadCart();
+ lucide.createIcons();
 
 </script>
 
