@@ -6,37 +6,50 @@
 <title>Seller Dashboard</title>
 
 <style>
+  
 .logo{
   font-family: 'Cormorant Garamond', serif;
   font-size: 44px;
   letter-spacing: 8px;
   font-weight: 600;
-  color: #111; /* BLACK */
+  color: white; /* BLACK */
 }
 
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
 
-  background:
-    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.03), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(0,0,0,0.02), transparent 50%),
-    linear-gradient(180deg, #f8f9fb 0%, #f2f4f7 100%);
+background:
+  radial-gradient(circle at 30% 20%, rgba(120,80,255,0.14), transparent 45%),
+  radial-gradient(circle at 70% 40%, rgba(0,200,255,0.12), transparent 50%),
+  linear-gradient(180deg, #141821 0%, #1a1f2b 100%);
 
-  color: #111;
+  color: #e6edf3; /* softer dark */
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: radial-gradient(circle at center, rgba(22,199,132,0.04), transparent 65%);
+  pointer-events: none;
 }
 
+
 .nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 40px;
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  position: sticky;
-  top: 0;
-  z-index: 9999;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+
+  background: transparent;
+  border-bottom: none;
+
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
 }
 
 /* LEFT */
@@ -64,7 +77,9 @@ body {
   opacity: 0;
   padding: 8px 0;
   border-radius: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: white;
 
   transition: all 0.3s ease;
   overflow: hidden;
@@ -75,16 +90,29 @@ body {
   opacity: 1;
   padding: 8px 14px;
 }
+.card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
 
-.card{
-  background:#fff;
-  padding:25px;
-  border-radius:18px;
-  margin-bottom:25px;
-  border:1px solid #eee;
-  box-shadow:0 8px 20px rgba(0,0,0,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  border-radius: 18px;
+  padding: 30px;
+  margin: 80px auto;
+max-width: 1100px;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
-
+.card > div:first-child{
+  margin-bottom: 20px;
+}
+.compact-card{
+  padding: 10px 16px;   /* smaller */
+  margin: 20px auto 10px auto;    /* less vertical space */
+}
+.compact-card > div:first-child{
+  margin-bottom: 0; /* remove extra gap */
+}
 .product{
   padding: 15px;
   border-radius: 16px;
@@ -129,13 +157,15 @@ body {
 }
 
 
-/* INPUTS */
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
-  border:1px solid #ddd;
+input, textarea, select{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: white;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color: rgba(255,255,255,0.5);
 }
 
 /* BUTTONS */
@@ -154,18 +184,18 @@ button{
 /* ORDERS */
 .order{
   padding:15px;
-  border:1px solid #eee;
+  border:1px solid rgba(255,255,255,0.08);
   border-radius:12px;
   margin-bottom:12px;
-  background:#fafafa;
+  background: rgba(255,255,255,0.04);
 }
 
 .empty{
   text-align:center;
-  color:#777;
+  color: rgba(255,255,255,0.5);
+
   padding:15px;
 }
-/* ICON BUTTON */
 .icon-btn{
   display:flex;
   align-items:center;
@@ -174,17 +204,20 @@ button{
   height:38px;
   border-radius:50%;
   border:none;
-  background: rgba(0,0,0,0.05);
+
+  background: rgba(255,255,255,0.08); /* FIX */
+  color: white;
+
   cursor:pointer;
   transition:0.2s;
 }
+
 .icon-btn:hover{
   background:#111;
-  color:white;
 }
 /* target the actual SVG inside the button */
 .icon-btn svg {
-  stroke: #111;
+  stroke: white; /* FIX */
   transition: 0.2s;
 }
 
@@ -198,8 +231,9 @@ button{
   right:0;
   top:45px;
   width:180px;
-  background:#fff;
-  border:1px solid #eee;
+  background: rgba(20,24,33,0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+
   border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
 
@@ -236,22 +270,32 @@ button{
 }
 
 .notif-item:hover{
-  background: rgba(0,0,0,0.04);
+  background: rgba(255,255,255,0.05); /* FIX */
   transform: translateX(3px);
 }
-.dropdown-content {
+.dropdown-content{
+  margin-top: 14px;
+
+  background: rgba(20,24,33,0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+
+  padding: 18px;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+  max-width: 1100px;
+
+  /* animation */
   max-height: 0;
   opacity: 0;
   overflow: hidden;
   transform: translateY(-8px);
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 10;
-  margin-top: 10px;
+  transition: all 0.25s ease;
 }
 
-.dropdown-content.show {
-  max-height: 400px;
+.dropdown-content.show{
+  max-height: 500px;
   opacity: 1;
   transform: translateY(0);
 }
@@ -260,7 +304,7 @@ button{
 .dropdown-content select{
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  color: #111;
+  color: white;
 
   border-radius: 10px;
   padding: 10px 12px;
@@ -268,13 +312,6 @@ button{
   transition: 0.2s;
 }
 
-.dropdown-content input:focus,
-.dropdown-content textarea:focus,
-.dropdown-content select:focus{
-  outline: none;
-  border-color: #16c784;
-  box-shadow: 0 0 0 3px rgba(22,199,132,0.15);
-}
 .popup{
   position:fixed;
   inset:0;
@@ -295,7 +332,7 @@ button{
 }
 
 .popup-box{
-  background:#000;
+   background:#141821;
   color:#fff;
   padding:25px 30px;
   border-radius:14px;
@@ -337,21 +374,23 @@ button{
 
 /* ADD PRODUCT (PRIMARY CTA) */
 .add-btn{
-  margin-top: 12px;
+  grid-column: span 2;
+
+  width: auto;              /* ❌ remove full width */
+  padding: 10px 18px;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  display: block;
+  margin: 14px auto 0 auto;  /* ✅ center it */
 
   background: linear-gradient(135deg, #16c784, #0ea56b);
   color: white;
 
-  font-weight: 600;
-  border-radius: 12px;
-
-  padding: 12px;
-
-  width: 100%;
-
-  box-shadow: 0 12px 30px rgba(22,199,132,0.25);
-
-  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(22,199,132,0.25);
 }
 
 .add-btn:hover{
@@ -365,7 +404,7 @@ button{
 
 /* EDIT */
 .edit-btn{
-  background: rgba(255, 193, 7, 0.12);
+background: rgba(255,255,255,0.7);
   color: #d6a600;
   border: 1px solid rgba(255, 193, 7, 0.35);
 }
@@ -423,7 +462,7 @@ button:active{
   transition: none !important;
 }
 .product-card:hover .product-media img{
-  transform: scale(1.12);
+  transform: scale(1.03);
   border-radius: 18px;
 }
 
@@ -444,13 +483,14 @@ button:active{
 .product-info h3{
   margin:0;
   font-size:16px;
-  color:#111;
+  color:white;
   font-weight:600;
   letter-spacing:0.3px;
 }
 
 .price{
-  color:#16c784;
+  color: #16c784;/* soft blue instead of green */
+
   font-weight:600;
   margin:4px 0;
 }
@@ -458,6 +498,7 @@ button:active{
 .stock{
   font-size:13px;
   opacity:0.7;
+  color: rgba(255,255,255,0.6);
 }
 
 /* ACTIONS */
@@ -480,9 +521,9 @@ button:active{
 
   z-index: 100;
 
-  background: #fff;
+   background: rgba(20,24,33,0.95);
   padding: 12px;
-  border-radius: 12px;
+   border: 1px solid rgba(255,255,255,0.08);
   margin-top: 10px;
 
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
@@ -499,50 +540,24 @@ button:active{
   opacity: 1;
   transform: translateY(0);
 }
-.product-card{
-  position: relative;
-  z-index: 1;
-  overflow: visible;
+.product-card {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
 
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
 
-  border-radius: 18px;
+  border-radius: 16px;
 
-  background: rgba(255,255,255,0.04);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 
-  border: 1px solid rgba(255,255,255,0.10);
-
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.04),
-    0 8px 20px rgba(0,0,0,0.15);
-
-backdrop-filter: none;
-
-  transform: translateY(0);
-  transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+  transition: 0.25s ease;
 }
-.product-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-.product-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:18px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.08),
-    transparent 40%,
-    rgba(22,199,132,0.05)
-  );
-
-  opacity:0.6;
-  pointer-events:none;
+.product-card:hover {
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5),
+              0 0 25px rgba(22,199,132,0.12);
 }
+
 .product-card.active{
   z-index: 9999 !important;
 }
@@ -554,6 +569,199 @@ backdrop-filter: none;
   from {opacity:0; transform: translateY(-5px);}
   to {opacity:1; transform: translateY(0);}
 }
+.add-product-btn{
+  position: relative;   /* 🔥 REQUIRED for ::after */
+  overflow: hidden; 
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  width:auto;              /* 🔥 no full width */
+  padding:10px 16px;       /* 🔥 reduced size */
+
+  border:none;
+  border-radius:10px;
+
+  font-weight:600;
+  font-size:13px;
+
+  color:white;
+
+  background: linear-gradient(135deg, #16c784, #0ea56b);
+
+  box-shadow:
+    0 6px 16px rgba(22,199,132,0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+
+  cursor:pointer;
+  transition: all 0.25s ease;
+}
+
+/* smaller icon */
+.add-product-btn svg{
+  width:16px;
+  height:16px;
+}
+
+/* hover */
+.add-product-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(22,199,132,0.3);
+}
+
+/* click */
+.add-product-btn:active{
+  transform: scale(0.97);
+}
+/* OPTIONAL: subtle glow on hover */
+.add-product-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 60%);
+  opacity:0;
+  transition:0.25s;
+}
+
+.add-product-btn:hover::after{
+  opacity:1;
+}
+#bestList .product-card {
+  border: 1px solid rgba(22,199,132,0.25);
+  box-shadow: 0 10px 25px rgba(22,199,132,0.15);
+}
+.best-card{
+  display:flex;
+  gap:16px;
+  align-items:center;
+
+  background: rgba(255,255,255,0.04); /* FIX */
+  border-radius:18px;
+  padding:14px;
+
+  border:1px solid rgba(255,255,255,0.08);
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.best-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.best-media{
+  position:relative;
+  width:140px;
+  height:100px;
+  flex-shrink:0;
+
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.best-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* BADGE */
+.best-badge{
+  position:absolute;
+  top:8px;
+  left:8px;
+
+  background:#16c784;
+  color:#fff;
+
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:10px;
+}
+
+/* INFO */
+.best-info h3{
+  margin:0;
+  font-size:16px;
+}
+
+.best-info .price{
+  color:#16c784;
+  font-weight:600;
+  margin:4px 0;
+}
+
+.best-info .score{
+  font-size:13px;
+  opacity:0.7;
+}
+#bestList{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.form-grid input,
+.form-grid textarea,
+.form-grid select{
+  width: 100%;
+  padding: 10px 12px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.04);
+  color: white;
+
+  font-size: 13px;
+}
+#imgCount{
+  display:block;
+  margin: 6px 0 10px;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+}
+.add-bar{
+  margin-top: 90px;
+
+  display: flex;
+  justify-content: flex-start;
+
+  padding-left: 40px; /* match navbar */
+}
+.logout-btn {
+  padding: 10px 18px;
+  border-radius: 999px; /* pill shape */
+
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+
+  color: #e6edf3;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+
+  transition: all 0.25s ease;
+}
+
+/* hover = same premium feel */
+.logout-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.4);
+
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(0,140,255,0.25);
+}
+
 </style>
 </head>
 
@@ -603,18 +811,23 @@ backdrop-filter: none;
 </div>
 
     <!-- LOGOUT -->
-    <button onclick="logout()">Logout</button>
+<button class="logout-btn" onclick="logout()">Logout</button>
 
   </div>
 
 </div>
 
 <!-- ADD PRODUCT -->
-<div class="card">
-<button class="dropbtn" onclick="toggleAdd()">Add Product</button>
+<div class="add-bar">
+  <button class="add-product-btn" onclick="toggleAdd()">
+    <i data-lucide="plus"></i>
+    <span>Add Product</span>
+  </button>
+</div>
 
 <div id="addBox" class="dropdown-content">
 
+  <div class="form-grid">
 <input id="name" placeholder="Product Name">
 <textarea id="description" placeholder="Description"></textarea>
 <input id="price" type="number" placeholder="Price">
@@ -622,28 +835,27 @@ backdrop-filter: none;
 <input type="file" id="image" multiple>
 <small id="imgCount">No images selected</small>
 
-<button class="add-btn" onclick="addProduct()">Add Product</button>
 <select id="category">
-  <option value="battery">Battery & Energy Storage</option>
-  <option value="charging">Charging Equipment</option>
-  <option value="drivetrain">Electric Drivetrain Components</option>
-  <option value="electronics">Control & Electronics</option>
-  <option value="mechanical">Mechanical & Suspension Parts</option>
+  <option value="battery">Battery</option>
+  <option value="charging">Charging</option>
+  <option value="accessories">Accessories</option>
+  <option value="tools">Tools</option>
+  <option value="care">Care</option>
 </select>
-
+  <button class="add-btn" onclick="addProduct()">Add Product</button>
 </div>
+</div>
+</div>
+</div>
+<div class="card">
+  <h3>🔥 Best Performing Product</h3>
+  <div id="bestList"></div>
 </div>
 
 <!-- PRODUCTS -->
 <div class="card">
 <h3>Your Products</h3>
 <div class="product-grid" id="list"></div>
-</div>
-
-<!-- ORDERS -->
-<div class="card">
-<h3>📦 Customer Orders</h3>
-<div id="orders" class="empty">Loading orders...</div>
 </div>
 
 </div>
@@ -893,6 +1105,47 @@ async function saveEdit(id){
   // ✅ IMPORTANT: wait properly, then reload
   await loadProducts();
 }
+
+async function loadBestProducts(){
+  try{
+    const res = await fetch("/api/seller/best-product", {
+      headers:{ Authorization:"Bearer "+token }
+    });
+
+    const data = await res.json();
+    const list = document.getElementById("bestList");
+
+    list.innerHTML = "";
+
+    if(!data || data.message){
+      list.innerHTML = "<p class='empty'>No top products yet</p>";
+      return;
+    }
+
+  const div = document.createElement("div");
+div.className = "best-card";
+
+div.innerHTML = `
+  <div class="best-media">
+    <img src="${(data.images && data.images[0]) || data.image_url || '/Images/placeholder.jpg'}">
+    <div class="best-badge">🔥 Best Seller</div>
+  </div>
+
+  <div class="best-info">
+    <h3>${data.name}</h3>
+    <p class="price">ZMW ${data.price}</p>
+    <p class="score">🔥 ${data.score} interactions</p>
+  </div>
+`;
+
+document.getElementById("bestList").appendChild(div);
+
+  }catch(err){
+    console.error("BEST PRODUCTS ERROR:", err);
+    document.getElementById("bestList").innerHTML =
+      "<p class='empty'>Failed to load</p>";
+  }
+}
 // ================= LOAD ORDERS =================
 async function loadOrders(){
 
@@ -949,7 +1202,7 @@ window.location="login.html";
 window.onload = () => {
   loadUser();
   loadProducts();
-  loadOrders();
+  loadBestProducts();
 };
 document.addEventListener("DOMContentLoaded", () => {
   lucide.createIcons();

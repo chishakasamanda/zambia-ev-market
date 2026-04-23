@@ -260,19 +260,22 @@ localStorage.setItem("token", data.token);
 localStorage.setItem("role", data.role);
 localStorage.setItem("name", data.name);
 
-if(data.role === "seller"){
-window.location.href = "products.html";
-}else{
-window.location.href = "buyer-dashboard.html";
+if(data.role === "admin"){
+  window.location.href = "admin-dashboard.html";
 }
-
+else if(data.role === "seller"){
+  window.location.href = "products.html";
+}
+else{
+  window.location.href = "buyer-dashboard.html";
+}
 }catch(err){
 alert("Server error");
 }
 }
 
 function goBack(){
-  window.history.back();
+  window.location.href = "index.html";
 }
 
 lucide.createIcons();

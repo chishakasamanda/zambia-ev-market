@@ -506,19 +506,29 @@ app.post("/api/checkout", verifyToken, (req, res) => {
     return res.status(400).json({ message: "Missing details" });
   }
 
-  db.query(
-    "SELECT * FROM cart WHERE user_id=?",
-    [req.user.id],
-    (err, cartItems) => {
-      if (err) return res.status(500).json({ message: "DB error" });
+db.query(
+  `SELECT c.quantity, p.price, p.id as product_id
+   FROM cart c
+   JOIN products p ON c.product_id = p.id
+   WHERE c.user_id=?`,
+  [req.user.id],
+  (err, results) => {
 
-      if (cartItems.length === 0) {
-        return res.status(400).json({ message: "Cart is empty" });
-      }
+    if (err) return res.status(500).json({ message: "DB error" });
 
-      db.query(
-        "INSERT INTO orders (user_id, name, phone, address, status) VALUES (?,?,?,?,?)",
-        [req.user.id, name, phone, address, "COD Pending"],
+const cartItems = results || [];
+
+if (cartItems.length === 0) {
+  return res.status(400).json({ message: "Cart is empty" });
+}
+
+const total = cartItems.reduce((sum, item) => {
+  return sum + (item.price * item.quantity);
+}, 0);
+
+db.query(
+  "INSERT INTO orders (user_id, name, phone, address, status, total_amount) VALUES (?,?,?,?,?,?)",
+  [req.user.id, name, phone, address, "pending", total],
         (err, orderResult) => {
           if (err) return res.status(500).json({ message: "Order failed" });
 
@@ -538,7 +548,7 @@ app.post("/api/checkout", verifyToken, (req, res) => {
                 "DELETE FROM cart WHERE user_id=?",
                 [req.user.id],
                 () => {
-                  res.json({ message: "COD Order placed" });
+                  res.json({ message: "COD Order placed", orderId });
                 }
               );
             }
@@ -767,19 +777,20 @@ app.get("/api/seller/orders", verifyToken, (req, res) => {
   const sellerId = req.user.id;
 
   const sql = `
-    SELECT 
-      o.id,
-      o.name AS buyer_name,
-      o.phone,
-      o.address,
-      o.status,
-      SUM(oi.quantity) AS items
-    FROM order_items oi
-    JOIN orders o ON oi.order_id = o.id
-    JOIN products p ON oi.product_id = p.id
-    WHERE p.seller_id = ?
-    GROUP BY o.id
-    ORDER BY o.id DESC
+SELECT 
+  o.id,
+  o.name AS buyer_name,
+  o.phone,
+  o.address,
+  o.status,
+  SUM(oi.quantity) AS items,
+  SUM(oi.quantity * p.price) AS total 
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.id
+JOIN products p ON oi.product_id = p.id
+WHERE p.seller_id = ?
+GROUP BY o.id
+ORDER BY o.id DESC
   `;
 
   db.query(sql, [sellerId], (err, rows) => {
@@ -903,35 +914,250 @@ app.get("/api/messages/:id", verifyToken, (req, res) => {
   );
 });
 
-
-app.put("/api/seller/profile", verifyToken, upload.single("image"), (req, res) => {
+app.get("/api/seller/profile", verifyToken, (req, res) => { 
   const userId = req.user.id;
 
-  const { name, phone, shop_name } = req.body;
-  const image = req.file ? `/Images/${req.file.filename}` : null;
+  db.query(
+    `SELECT 
+      name, 
+      phone, 
+      shop_name, 
+      profile_image,
+      verification_doc,
+      category,
+      description,
+      location,
+      status
+     FROM users 
+     WHERE id=?`,
+    [userId],
+    (err, result) => {
 
-  let sql = `
-    UPDATE users 
-    SET name=?, phone=?, shop_name=?
-  `;
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ message: "DB error" });
+      }
 
-  let values = [name, phone, shop_name];
+      res.json(result[0] || {});
+    }
+  );
+});
 
-  if (image) {
-    sql += `, profile_image=?`;
-    values.push(image);
+app.put("/api/seller/profile", verifyToken, upload.fields([
+  { name: "profile_image", maxCount: 1 },
+  { name: "verification_doc", maxCount: 1 }
+]), (req, res) => {
+
+  const userId = req.user.id;
+const { name, phone, shop_name, category, description, location } = req.body;
+
+  // ✅ validation
+  if (!name || !shop_name || !phone) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
-  sql += ` WHERE id=?`;
-  values.push(userId);
+  // ✅ safe file handling
+  const profileImage = req.files && req.files["profile_image"]
+    ? `/Images/${req.files["profile_image"][0].filename}`
+    : null;
+
+  const verificationDoc = req.files && req.files["verification_doc"]
+    ? `/Images/${req.files["verification_doc"][0].filename}`
+    : null;
+
+let sql = `
+  UPDATE users 
+  SET name=?, phone=?, shop_name=?, category=?, description=?, location=?
+`;
+
+let values = [name, phone, shop_name, category, description, location];
+
+if (profileImage) {
+  sql += `, profile_image=?`;
+  values.push(profileImage);
+}
+
+if (verificationDoc) {
+  sql += `, verification_doc=?, status='pending'`;
+  values.push(verificationDoc);
+}
+
+sql += ` WHERE id=?`;
+values.push(userId);
 
   db.query(sql, values, (err) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Update failed" });
+    }
+
     res.json({ message: "Profile updated successfully" });
   });
 });
 
+// ================= ADMIN: GET ALL USERS =================
+app.get("/api/admin/users", verifyToken, (req, res) => {
 
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin only" });
+  }
+
+  db.query(
+    "SELECT id, name, email, role, status, is_deleted FROM users",
+    (err, result) => {
+      if (err) return res.status(500).json([]);
+      res.json(result);
+    }
+  );
+});
+
+// ================= ADMIN: DELETE USER =================
+app.delete("/api/admin/users/:id", verifyToken, (req, res) => {
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin only" });
+  }
+
+  const userId = req.params.id;
+
+  db.query(
+    "UPDATE users SET is_deleted=1 WHERE id=?",
+    [userId],
+    (err) => {
+      if (err) return res.status(500).json({ message: "Delete failed" });
+      res.json({ message: "User deleted" });
+    }
+  );
+});
+
+
+// ================= ADMIN: GET ALL ORDERS =================
+app.get("/api/admin/orders", verifyToken, (req, res) => {
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json([]);
+  }
+
+  const sql = `
+   SELECT 
+  o.id,
+  o.status,
+  o.total_amount,
+  u.name AS user_name,
+  u.email AS user_email
+FROM orders o
+JOIN users u ON o.user_id = u.id
+ORDER BY o.id DESC
+  `;
+
+  db.query(sql, (err, orders) => {
+
+    if (err) {
+      console.log(err);
+      return res.status(500).json([]);
+    }
+
+    if (orders.length === 0) {
+      return res.json([]);
+    }
+
+    const orderIds = orders.map(o => o.id);
+
+    db.query(
+      `
+      SELECT oi.order_id, oi.quantity, p.name, p.price
+      FROM order_items oi
+      JOIN products p ON oi.product_id = p.id
+      WHERE oi.order_id IN (?)
+      `,
+      [orderIds],
+      (err, items) => {
+
+        if (err) {
+          console.log(err);
+          return res.status(500).json([]);
+        }
+
+        // attach items to each order
+        orders.forEach(o => {
+          o.items = items
+            .filter(i => i.order_id === o.id)
+            .map(i => ({
+              name: i.name,
+  quantity: i.quantity,
+  price: i.price
+            }));
+        });
+
+        res.json(orders);
+      }
+    );
+  });
+});
+
+// ================= ADMIN: UPDATE ORDER =================
+app.put("/api/admin/orders/:id", verifyToken, (req, res) => {
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin only" });
+  }
+
+  const { status } = req.body;
+
+  db.query(
+    "UPDATE orders SET status=? WHERE id=?",
+    [status, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ message: "Update failed" });
+      res.json({ message: "Order updated" });
+    }
+  );
+});
+app.get("/api/admin/products", verifyToken, (req, res) => {
+
+  if(req.user.role !== "admin"){
+    return res.status(403).json([]);
+  }
+
+  db.query("SELECT * FROM products", (err, result)=>{
+    if(err) return res.status(500).json([]);
+    res.json(result);
+  });
+});
+
+// ================= ADMIN: APPROVE SELLER =================
+app.put("/api/admin/approve-seller/:id", verifyToken, (req, res) => {
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  db.query(
+   "UPDATE users SET status='approved' WHERE id=?",
+    [req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ message: "Update failed" });
+      res.json({ message: "Seller approved" });
+    }
+  );
+});
+
+// ================= ADMIN: REJECT SELLER =================
+app.put("/api/admin/reject-seller/:id", verifyToken, (req, res) => {
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  db.query(
+    "UPDATE users SET status='rejected' WHERE id=?",
+    [req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ message: "Update failed" });
+      res.json({ message: "Seller rejected" });
+    }
+  );
+});
 // ================= SERVER =================
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");

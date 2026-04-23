@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel | ZEVL</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --ev-green: #16c784;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* GLASS CARD */
+.card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(14px);
+
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* SECTION TITLE */
+h2 {
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ITEM ROW */
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px;
+  margin-bottom: 10px;
+
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+}
+
+/* BUTTONS */
+button {
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* BUTTON TYPES */
+.approve {
+  background: rgba(22,199,132,0.2);
+  color: #16c784;
+}
+
+.reject {
+  background: rgba(255,80,80,0.2);
+  color: #ff4d4d;
+}
+
+.delete {
+  background: rgba(255,255,255,0.08);
+  color: white;
+}
+
+/* SELECT */
+select {
+  background: #111;
+  color: white;
+  border-radius: 10px;
+  padding: 5px;
+  border: none;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.pending {
+  background: rgba(255, 200, 0, 0.2);
+  color: #ffc107;
+}
+
+.approved {
+  background: rgba(22,199,132,0.2);
+  color: #16c784;
+}
+
+.rejected {
+  background: rgba(255,80,80,0.2);
+  color: #ff4d4d;
+}
+.badge {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.badge.pending {
+  background: rgba(255,165,0,0.2);
+  color: orange;
+}
+
+.badge.approved {
+  background: rgba(22,199,132,0.2);
+  color: #16c784;
+}
+
+.badge.rejected {
+  background: rgba(255,80,80,0.2);
+  color: #ff4d4d;
+}
+.item:hover {
+  transform: scale(1.02);
+  background: rgba(255,255,255,0.06);
+}
+.status {
+  padding:4px 10px;
+  border-radius:10px;
+  font-size:11px;
+}
+
+.status.pending { background:rgba(255,165,0,0.2); color:orange; }
+.status.confirmed { background:rgba(0,200,255,0.2); color:#00c8ff; }
+.status.shipped { background:rgba(120,80,255,0.2); color:#7850ff; }
+.status.delivered { background:rgba(22,199,132,0.2); color:#16c784; }
+.status.cancelled { background:rgba(255,80,80,0.2); color:#ff4d4d; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div id="stats" style="display:flex; gap:15px; margin-bottom:20px;"></div>
+
+<h2>Admin Dashboard</h2>
+
+<input id="searchUsers" placeholder="Search users..." 
+oninput="filterUsers()" 
+style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px;">
+
+<select onchange="filterUsersByRole(this.value)" style="margin-bottom:10px; padding:8px; border-radius:10px;">
+  <option value="">All Roles</option>
+  <option value="admin">Admin</option>
+  <option value="seller">Seller</option>
+  <option value="buyer">Buyer</option>
+</select>
+
+  <div class="card">
+    <h3>Users</h3>
+    <div id="users">Loading users...</div>
+  </div>
+
+<div class="card">
+  <h3>Products</h3>
+
+  <input id="searchProducts" placeholder="Search products..." 
+  oninput="filterProducts()" 
+  style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px;">
+
+  <div id="products">Loading products...</div>
+</div>
+
+  <select onchange="filterOrders(this.value)" style="margin-bottom:10px; padding:8px; border-radius:10px;">
+  <option value="">All Orders</option>
+  <option value="pending">Pending</option>
+  <option value="confirmed">Confirmed</option>
+  <option value="shipped">Shipped</option>
+  <option value="delivered">Delivered</option>
+  <option value="cancelled">Cancelled</option>
+</select>
+
+  <div class="card">
+    <h3>Orders</h3>
+    <div id="orders">Loading orders...</div>
+  </div>
+
+<script>
+let allUsers = [];
+let allProducts = [];
+let allOrders = [];
+
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+
+if(!token){
+  window.location = "login.html";
+  throw new Error("No token");
+}
+
+if(role !== "admin"){
+  alert("Access denied");
+  window.location = "login.html";
+  throw new Error("Not admin");
+}
+
+function renderUsers(data){
+
+  if(!data.length){
+  document.getElementById("users").innerHTML = "No users found";
+  return;
+}
+
+let html="";
+
+data.forEach(u=>{
+html += `
+<div class="item">
+  <div>
+    ${u.name} (${u.role})<br>
+    ${u.status ? `<span class="badge ${u.status}">${u.status}</span>` : "not seller"}
+  </div>
+
+  <div>
+    ${u.role === "seller" && (!u.status || u.status === "pending") ? `
+<button class="approve" onclick="approveSeller(${u.id})"><i data-lucide="check"></i></button>
+<button class="reject" onclick="rejectSeller(${u.id})"><i data-lucide="x"></i></button>
+    ` : ""}
+
+<button onclick="openUserModal(${u.id})"><i data-lucide="eye"></i></button>
+<button class="delete" onclick="deleteUser(${u.id})"><i data-lucide="trash"></i></button> </div>
+</div>
+`;
+});
+
+document.getElementById("users").innerHTML = html;
+lucide.createIcons();
+}
+
+// USERS
+async function loadUsers(){
+
+  document.getElementById("users").innerHTML = "Loading...";
+  const res = await fetch("/api/admin/users",{
+    headers:{Authorization:"Bearer "+token}
+  });
+
+if(!res.ok){
+  return;
+}
+
+  const data = await res.json();
+
+  allUsers = data;
+  renderUsers(data);
+}
+
+
+window.approveSeller = async function(id){
+  await fetch("/api/admin/approve-seller/"+id,{
+    method:"PUT",
+    headers:{ Authorization:"Bearer "+token }
+  });
+
+await loadUsers();
+renderStats(allUsers, allProducts, allOrders);
+}
+
+window.rejectSeller = async function(id){
+  await fetch("/api/admin/reject-seller/"+id,{
+    method:"PUT",
+    headers:{ Authorization:"Bearer "+token }
+  });
+
+await loadUsers();
+renderStats(allUsers, allProducts, allOrders);
+}
+
+// DELETE USER
+window.deleteUser = async function(id){
+
+  if(!confirm("Delete this user?")) return;
+
+  await fetch("/api/admin/users/"+id,{
+    method:"DELETE",
+    headers:{Authorization:"Bearer "+token}
+  });
+
+  await loadUsers();
+  renderStats(allUsers, allProducts, allOrders);
+}
+
+// PRODUCTS
+async function loadProducts(){
+  document.getElementById("products").innerHTML = "Loading...";
+  console.log("Loading products...");
+const res = await fetch("/api/admin/products",{
+headers:{Authorization:"Bearer "+token}
+});
+
+if(!res.ok){
+  document.getElementById("products").innerHTML = "Error loading products";
+  return;
+}
+const data = await res.json();
+if(!data.length){
+  document.getElementById("products").innerHTML = "No products";
+  return;
+}
+ allProducts = data;
+
+let html="";
+data.forEach(p=>{
+html += `
+<div class="item">
+  <div>${p.name} - ZMW ${p.price}</div>
+  <div>
+    <button class="delete" onclick="deleteProduct(${p.id})">Delete</button>
+  </div>
+</div>
+`;
+});
+document.getElementById("products").innerHTML = html;
+}
+
+// DELETE PRODUCT
+window.deleteProduct = async function(id){
+  if(!confirm("Delete this product?")) return;
+await fetch("/api/admin/products/"+id,{
+method:"DELETE",
+headers:{Authorization:"Bearer "+token}
+});
+
+await loadProducts();
+renderStats(allUsers, allProducts, allOrders);
+}
+
+// ORDERS
+async function loadOrders(){
+  console.log("Loading orders...");
+  document.getElementById("orders").innerHTML = "Loading...";
+const res = await fetch("/api/admin/orders",{
+headers:{Authorization:"Bearer "+token}
+});
+
+if(!res.ok){
+  document.getElementById("orders").innerHTML = "Error loading orders";
+  return;
+}
+
+const data = await res.json();
+
+if(!data.length){
+  document.getElementById("orders").innerHTML = "No orders";
+  return;
+}
+
+allOrders = data;
+renderOrders(data);
+}
+window.updateOrder = async function(id, status) {
+
+  if (!status) return;
+
+  try {
+    const res = await fetch("/api/admin/orders/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token")
+      },
+      body: JSON.stringify({ status })
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      alert(data.message || "Update failed");
+      return;
+    }
+
+alert("Order updated to " + status);
+
+    await loadOrders();
+    renderStats(allUsers, allProducts, allOrders);
+    closeOrderModal();
+
+  } catch (err) {
+    console.error("Update error:", err);
+    alert("Network error");
+  }
+};
+
+function renderStats(users, products, orders){
+
+const totalUsers = users.length;
+const totalProducts = products.length;
+const totalOrders = orders.length;
+const revenue = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+const pendingSellers = users.filter(u => u.status === "pending").length;
+
+document.getElementById("stats").innerHTML = `
+  <div class="card">Users<br><b>${totalUsers}</b></div>
+  <div class="card">Products<br><b>${totalProducts}</b></div>
+  <div class="card">Orders<br><b>${totalOrders}</b></div>
+  <div class="card">Revenue<br><b>ZMW ${revenue}</b></div>
+  <div class="card">Pending Sellers<br><b>${pendingSellers}</b></div>
+`;
+}
+
+function filterUsers(){
+
+const q = document.getElementById("searchUsers").value.toLowerCase();
+
+const filtered = allUsers.filter(u =>
+  (u.name || "").toLowerCase().includes(q) ||
+  (u.email || "").toLowerCase().includes(q)
+);
+
+renderUsers(filtered);
+}
+
+function openUserModal(id){
+  const user = allUsers.find(u => u.id === id);
+  if(!user) return;
+
+  document.getElementById("modalContent").innerHTML = `
+    <p><b>Name:</b> ${user.name}</p>
+    <p><b>Email:</b> ${user.email || "N/A"}</p>
+    <p><b>Role:</b> ${user.role}</p>
+    <p><b>Status:</b> ${user.status || "none"}</p>
+  `;
+
+  document.getElementById("userModal").style.display = "block";
+}
+
+function closeModal(){
+  document.getElementById("userModal").style.display = "none";
+}
+
+
+function renderOrders(data){
+
+  if(!data.length){
+    document.getElementById("orders").innerHTML = "No orders";
+    return;
+  }
+
+  let html = "";
+
+  data.forEach(o=>{
+    html += `
+    <div class="item">
+      <div>
+        Order #${o.id}<br>
+        <span class="status ${o.status}">${o.status}</span> - ZMW ${o.total_amount}
+      </div>
+
+      <div>
+        <button onclick="openOrderModal(${o.id})">View</button>
+        <select onchange="updateOrder(${o.id}, this.value)">
+          <option value="">Change</option>
+          <option value="pending">pending</option>
+          <option value="confirmed">confirmed</option>
+          <option value="shipped">shipped</option>
+          <option value="delivered">delivered</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+      </div>
+    </div>
+    `;
+  });
+
+  document.getElementById("orders").innerHTML = html;
+
+  lucide.createIcons();
+}
+
+function filterOrders(status){
+
+  if(!status){
+    renderOrders(allOrders);
+    return;
+  }
+
+  const filtered = allOrders.filter(o => o.status === status);
+  renderOrders(filtered);
+}
+
+function openOrderModal(id){
+   const order = allOrders.find(o => o.id === id);
+  if(!order) return;
+
+ document.getElementById("orderModalContent").innerHTML = `
+  <p><b>Order ID:</b> ${order.id}</p>
+  <p><b>Status:</b> ${order.status}</p>
+  <p><b>Total:</b> ZMW ${order.total_amount}</p>
+
+  <hr style="margin:10px 0; border-color:#333;">
+
+  <p><b>Buyer:</b> ${order.user_name || "N/A"}</p>
+  <p><b>Email:</b> ${order.user_email || "N/A"}</p>
+
+  <hr style="margin:10px 0; border-color:#333;">
+
+  <p><b>Items:</b></p>
+${
+(order.items && order.items.length)
+  ? order.items.map(i => `
+      <div>
+        ${i.name} × ${i.quantity} - ZMW ${i.price * i.quantity}
+      </div>
+    `).join("") + `
+      <hr style="margin:10px 0; border-color:#333;">
+      <p><b>Total:</b> ZMW ${order.total_amount}</p>
+    `
+  : "No items"
+}
+
+<hr style="margin:10px 0; border-color:#333;">
+
+<p><b>Actions:</b></p>
+
+<div style="display:flex; gap:6px;">
+  <button onclick="updateOrder(${order.id}, 'confirmed')">Confirm</button>
+  <button onclick="updateOrder(${order.id}, 'shipped')">Ship</button>
+  <button onclick="updateOrder(${order.id}, 'delivered')">Deliver</button>
+  <button onclick="updateOrder(${order.id}, 'cancelled')">Cancel</button>
+</div>
+`;
+
+  document.getElementById("orderModal").style.display = "block";
+}
+
+function closeOrderModal(){
+  document.getElementById("orderModal").style.display = "none";
+}
+function filterUsersByRole(role){
+
+  if(!role){
+    renderUsers(allUsers);
+    return;
+  }
+
+  const filtered = allUsers.filter(u => u.role === role);
+  renderUsers(filtered);
+}
+
+function filterProducts(){
+
+  const q = document.getElementById("searchProducts").value.toLowerCase();
+
+  const filtered = allProducts.filter(p =>
+    (p.name || "").toLowerCase().includes(q)
+  );
+
+  let html="";
+
+  filtered.forEach(p=>{
+    html += `
+    <div class="item">
+      <div>${p.name} - ZMW ${p.price}</div>
+      <div>
+        <button class="delete" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    </div>
+    `;
+  });
+
+  document.getElementById("products").innerHTML = html;
+}
+// INIT
+async function init(){
+  await loadUsers();
+  await loadProducts();
+  await loadOrders();
+
+  renderStats(allUsers, allProducts, allOrders);
+}
+init();
+lucide.createIcons();
+
+setInterval(() => {
+  loadOrders();
+}, 5000);
+
+</script>
+
+<!-- USER MODAL -->
+<div id="userModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);">
+
+  <div style="background:#111; max-width:400px; margin:100px auto; padding:20px; border-radius:15px;">
+    
+    <h3>User Details</h3>
+    
+    <div id="modalContent"></div>
+
+    <button onclick="closeModal()">Close</button>
+  </div>
+
+</div>
+
+<!-- ORDER MODAL (SEPARATE) -->
+<div id="orderModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);">
+
+  <div style="background:#111; max-width:400px; margin:100px auto; padding:20px; border-radius:15px;">
+    
+    <h3>Order Details</h3>
+    
+    <div id="orderModalContent"></div>
+
+    <button onclick="closeOrderModal()">Close</button>
+  </div>
+
+</div>
+
+</body>
+</html>

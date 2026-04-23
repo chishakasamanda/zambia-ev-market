@@ -6,30 +6,157 @@
 <title>Profile</title>
 
 <style>
-body{
+  body{
   margin:0;
-  font-family:'Poppins', sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  font-family:'Poppins',sans-serif;
+
   background:
-    radial-gradient(circle at 20% 20%, #f8fafc 0%, transparent 50%),
-    radial-gradient(circle at 80% 30%, #eef2f6 0%, transparent 55%),
-    linear-gradient(180deg, #ffffff 0%, #f3f5f7 50%, #e9edf2 100%);
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color:white;
+}
+  
+.logo{
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  letter-spacing: 6px;
+  font-weight: 600;
+  color:white;
 }
 
+.logo:hover{
+  opacity:0.7;
+}
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+
+  background: rgba(20,24,33,0.85);
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+
+  position:sticky;
+  top:0;
+  z-index:9999;
+}
+
+.nav-left,
+.nav-right{
+  width:120px; /* balances center */
+  display:flex;
+  align-items:center;
+}
+
+.nav-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+}
+
+.profile-wrapper{
+  max-width:900px;
+  margin:40px auto;
+  padding:20px;
+}
+
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:30px;
+  
+}
+
+.avatar{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+
+  background: linear-gradient(135deg,#16c784,#00c2ff);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:600;
+  color:white;
+}
+
+.profile-header h2{
+  margin:0;
+  font-size:20px;
+}
+
+.profile-header p{
+  margin:2px 0 0;
+ color: rgba(255,255,255,0.6);
+  font-size:13px;
+}
+
+/* STATS */
+.profile-stats{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:16px;
+  margin-bottom:30px;
+}
+
+.stat-card{
+  background: rgba(255,255,255,0.03);
+  padding:20px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+
+  transition:0.2s;
+}
+
+.stat-card i{
+  background:#f3f4f6;
+  padding:8px;
+  border-radius:10px;
+}
+
+.stat-card h3{
+  margin:0;
+  font-size:20px;
+}
+
+.stat-card p{
+  margin:0;
+  font-size:13px;
+  color: rgba(255,255,255,0.6);
+}
+.section{
+  margin-bottom:30px;
+}
+
+.section h3{
+  margin-bottom:10px;
+  font-size:16px;
+  color: rgba(255,255,255,0.6);
+}
+/* FORM CARD */
 .card{
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  padding:30px;
-  border-radius:18px;
-  width:350px;
+ background: rgba(255,255,255,0.03);
+ backdrop-filter: blur(12px);
+  padding:25px;
+   border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
   display:flex;
   flex-direction:column;
   gap:12px;
-  border:1px solid rgba(0,0,0,0.06);
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+   color:white;
 }
 
 h2{
@@ -39,13 +166,17 @@ h2{
 input{
   padding:12px;
   border-radius:10px;
-  border:1px solid #ddd;
+
+  border:1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.05);
+  color:white;
   font-size:14px;
 }
 
 input:disabled{
-  background:#f5f5f5;
-  color:#777;
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.5);
 }
 
 button{
@@ -58,18 +189,18 @@ button{
 }
 
 .save-btn{
-  background:#16c784;
+  background:linear-gradient(135deg,#16c784,#00c2ff);
   color:white;
 }
 
 .edit-btn{
-  background:#111;
+  background: rgba(255,255,255,0.08);
   color:white;
 }
 
 button:hover{
-  transform:translateY(-3px);
-  box-shadow:0 8px 18px rgba(0,0,0,0.1);
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(22,199,132,0.2);
 }
 
 #msg{
@@ -79,7 +210,7 @@ button:hover{
 
 .small-note{
   font-size:12px;
-  color:#666;
+ color: rgba(255,255,255,0.6);
   text-align:center;
 }
 .back-btn{
@@ -117,33 +248,152 @@ button:hover{
   height: 22px;
   stroke-width: 2.2;
 }
+.list{
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.08);
+
+  overflow:hidden;
+}
+
+.list div{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:16px;
+  cursor:pointer;
+
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+
+  transition:0.2s;
+}
+
+.list div:last-child{
+  border-bottom:none;
+}
+
+.list div:hover{
+  background: rgba(255,255,255,0.05);
+}
+.list div svg{
+  stroke: rgba(255,255,255,0.7);
+}
+
+.list div:hover svg{
+  stroke: #16c784;
+}
+.list div:hover{
+  background: rgba(22,199,132,0.08);
+}
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:38px;
+  height:38px;
+
+  border-radius:50%;
+  border:none;
+
+  background: rgba(255,255,255,0.08);
+  color:white;
+
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.icon-btn:hover{
+  background:#111;
+}
+
+.icon-btn svg{
+  stroke:white;
+}
 </style>
 </head>
 
 <body>
+<div class="profile-page">
+<!-- NAV TOP -->
+<div class="nav">
+  <div class="nav-left">
+    <button class="icon-btn" onclick="back()">
+      <i data-lucide="arrow-left"></i>
+    </button>
+  </div>
 
-<!-- BACK BUTTON (TOP LEFT) -->
-<button class="back-btn icon-only" onclick="back()" title="Back">
-  <i data-lucide="arrow-left"></i>
-</button>
+ <div class="nav-center logo">ZEVL</div>
 
-<div class="card">
-
-<h2>Profile</h2>
-
-<input id="name" placeholder="Name" disabled>
-<input id="phone" placeholder="Phone (+260...)" disabled>
-<input id="address" placeholder="Zambia Address" disabled>
-<input id="email" placeholder="Email" disabled>
-
-<button id="editBtn" class="edit-btn" onclick="toggleEdit()">Edit Profile</button>
-<button class="save-btn" onclick="save()">Save Changes</button>
-
-<p id="msg"></p>
-<p class="small-note">Phone must be Zambian format (+260 or 0XXXXXXXXX)</p>
-
+  <div class="nav-right"></div>
 </div>
 
+<div class="profile-wrapper">
+
+  <!-- USER HEADER -->
+  <div class="profile-header">
+  <div class="avatar"></div>
+
+  <div>
+    <h2 id="displayName">Loading...</h2>
+    <p id="displayEmail"></p>
+  </div>
+</div>
+
+  <!-- STATS -->
+  <div class="profile-stats">
+    <div class="stat-card" onclick="goWishlist()">
+      <i data-lucide="heart"></i>
+      <p>Wishlist</p>
+      <h3 id="wishlistCount">0</h3>
+    </div>
+
+<div class="stat-card" onclick="goCart()">
+  <i data-lucide="shopping-cart"></i>
+  <p>Cart</p>
+  <h3 id="cartCount">0</h3>
+</div>
+  </div>
+
+ <div class="section">
+  <h3>Account Settings</h3>
+
+  <div class="card">
+
+    <input id="name" placeholder="Name" disabled>
+    <input id="phone" placeholder="Phone (+260...)" disabled>
+    <input id="address" placeholder="Zambia Address" disabled>
+    <input id="email" placeholder="Email" disabled>
+
+    <button id="editBtn" class="edit-btn" onclick="toggleEdit()">Edit Profile</button>
+    <button class="save-btn" onclick="save()">Save Changes</button>
+
+    <p id="msg"></p>
+  </div>
+
+</div>
+<div class="section">
+  <h3>Support</h3>
+
+<div class="list">
+  <div onclick="goReturns()">
+    <i data-lucide="file-text"></i> Return Policy
+  </div>
+
+  <div onclick="goChats()">
+    <i data-lucide="help-circle"></i> Help Center
+  </div>
+
+  <div onclick="goChats()">
+    <i data-lucide="message-circle"></i> Contact Support
+  </div>
+</div>
+</div>
+</div>
 <script>
 
 const token = localStorage.getItem("token");
@@ -160,6 +410,20 @@ const res = await fetch("/api/me",{
 
 const user = await res.json();
 
+const name = user.name || "User";
+
+document.getElementById("displayName").innerText = name;
+document.getElementById("displayEmail").innerText = user.email || "";
+
+// 🔥 generate initials
+const initials = name
+  .split(" ")
+  .map(n => n[0])
+  .join("")
+  .substring(0,2)
+  .toUpperCase();
+
+document.querySelector(".avatar").innerText = initials;
 // fill fields
 document.getElementById("name").value = user.name || "";
 document.getElementById("email").value = user.email || "";
@@ -169,6 +433,8 @@ const saved = JSON.parse(localStorage.getItem("profile")) || {};
 
 document.getElementById("phone").value = saved.phone || user.phone || "";
 document.getElementById("address").value = saved.address || user.address || "";
+
+document.getElementById("displayEmail").innerText = user.email || "";
 
 }catch(err){
 document.getElementById("msg").innerText="Failed to load profile";
@@ -269,6 +535,56 @@ msg.innerText = text;
 // BACK
 function back(){
 window.location="buyer-dashboard.html";
+}
+
+async function loadWishlistCount(){
+  try{
+    const res = await fetch("/api/wishlist",{
+      headers:{ Authorization:"Bearer "+token }
+    });
+
+    const data = await res.json();
+    document.getElementById("wishlistCount").innerText = data.length;
+
+  }catch{
+    document.getElementById("wishlistCount").innerText = "0";
+  }
+}
+
+
+async function loadCartCount(){
+  try{
+    const res = await fetch("/api/cart",{
+      headers:{ Authorization:"Bearer "+token }
+    });
+
+    const data = await res.json();
+
+    document.getElementById("cartCount").innerText = data.length;
+
+  }catch{
+    document.getElementById("cartCount").innerText = "0";
+  }
+}
+
+load();
+loadWishlistCount();
+loadCartCount();
+
+function goCart(){
+  window.location = "cart.html";
+}
+
+function goWishlist(){
+  window.location = "wishlist.html";
+}
+
+function goReturns(){
+  window.location = "returns.html";
+}
+
+function goChats(){
+  window.location = "buyer-chats.html";
 }
 
 load();

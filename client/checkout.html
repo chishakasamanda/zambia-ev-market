@@ -3,9 +3,37 @@
 <head>
 <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
 <title>Checkout</title>
 
 <style>
+  
+  body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(22,199,132,0.05), transparent 65%);
+  pointer-events: none;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: white;
+}
 
 .container{
   padding:30px 20px;
@@ -27,20 +55,30 @@
 }
 
 .card{
-  background:rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+
   padding:25px;
   border-radius:18px;
-  border:1px solid rgba(0,0,0,0.06);
-  backdrop-filter:blur(10px);
-}
 
+  border:1px solid rgba(255,255,255,0.08);
+}
 input, textarea, select{
   width:100%;
   padding:12px;
   margin:8px 0;
+
   border-radius:10px;
-  border:1px solid #ddd;
+  border:1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.05);
+  color: white;
+
   font-family:'Poppins',sans-serif;
+}
+
+input::placeholder, textarea::placeholder{
+  color: rgba(255,255,255,0.5);
 }
 
 .small-btn{
@@ -73,10 +111,19 @@ button{
   width:100%;
   border:none;
   border-radius:30px;
+
   background:linear-gradient(135deg,#16c784,#00c2ff);
+
   color:white;
   font-weight:600;
   cursor:pointer;
+
+  transition:0.25s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(22,199,132,0.25);
 }
 
 .hidden{
@@ -108,16 +155,26 @@ button{
   height:26px;
   stroke:#111; /* IMPORTANT FIX */
 }
-.nav{
+.nav {
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:18px 40px;
-  background:white;
-  border-bottom:1px solid #eee;
-  position:sticky;
-  top:0;
-  z-index:1000;
+
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .nav-left, .nav-right{
@@ -125,38 +182,72 @@ button{
   align-items:center;
   gap:10px;
 }
-
-.nav-center{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  font-weight:700;
-  font-size:22px;
-  letter-spacing:0.5px;
-  color:#111;
-  pointer-events:none; /* IMPORTANT FIX */
+select {
+  color: white;
+  background-color: rgba(255,255,255,0.05);
 }
+
+select:focus {
+  color: black;          /* 👈 change to black */
+  background: white;  
+}
+.toast{
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+
+  background: rgba(20,24,33,0.9);
+  backdrop-filter: blur(12px);
+
+  color: white;
+  padding: 14px 22px;
+  border-radius: 30px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  font-size: 14px;
+  letter-spacing: 0.3px;
+
+  opacity: 0;
+  transition: 0.3s ease;
+  z-index: 9999;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Variants */
+.toast.success{
+  border: 1px solid rgba(22,199,132,0.4);
+}
+
+.toast.error{
+  border: 1px solid rgba(255,80,80,0.4);
+}
+
+.toast.info{
+  border: 1px solid rgba(0,194,255,0.4);
+}
+
 </style>
 </head>
 
 <body>
-  <div class="nav">
-
-  <!-- LEFT -->
+ <div class="nav">
   <div class="nav-left">
     <button class="icon-btn" onclick="back()" title="Back">
       <i data-lucide="arrow-left"></i>
     </button>
   </div>
 
-  <!-- CENTER -->
-  <div class="nav-center">
-    ZEVL ⚡
+  <div class="nav-center logo">
+    ZEVL
   </div>
 
-  <!-- RIGHT -->
   <div class="nav-right"></div>
-
 </div>
 
 <div class="container">
@@ -184,10 +275,25 @@ button{
   <option value="cod">Cash on Delivery</option>
   <option value="mtn">MTN Money</option>
   <option value="airtel">Airtel Money</option>
+   <option value="card">Visa / Mastercard</option>
 </select>
+
+<p style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:5px;">
+Payments are securely processed. Mobile Money requires confirmation on your phone.
+</p>
 
 <input id="payPhone" class="hidden" placeholder="Mobile Money Number">
 
+<div id="cardFields" class="hidden">
+
+  <input id="cardNumber" placeholder="Card Number (4242 4242 4242 4242)">
+
+  <div style="display:flex; gap:10px;">
+    <input id="cardExpiry" placeholder="MM/YY">
+    <input id="cardCVV" placeholder="CVV">
+  </div>
+
+</div>
 </div>
 
 <!-- RIGHT -->
@@ -201,8 +307,13 @@ button{
 
 </div>
 </div>
+<div id="toast" class="toast hidden"></div>
 
 <script>
+  
+window.alert = function(message){
+  showToast(message, "info");
+};
 
 const token = localStorage.getItem("token");
 if(!token) window.location="login.html";
@@ -230,8 +341,8 @@ total += item.price * item.quantity;
 
 html += `
 <div class="summary-item">
-<span>${item.name} x ${item.quantity}</span>
-<span>ZMW ${item.price * item.quantity}</span>
+  <span>${item.name} x ${item.quantity}</span>
+  <span>ZMW ${(item.price * item.quantity).toFixed(2)}</span>
 </div>
 `;
 });
@@ -296,19 +407,29 @@ addressInput.value = saved.address || "";
 
 // ================= PAYMENT TOGGLE =================
 function togglePayment(){
-const method = document.getElementById("payment").value;
+  const method = document.getElementById("payment").value;
 
-if(method === "mtn" || method === "airtel"){
-payPhoneInput.classList.remove("hidden");
-}else{
-payPhoneInput.classList.add("hidden");
-}
+  const cardFields = document.getElementById("cardFields");
+
+  if(method === "mtn" || method === "airtel"){
+    payPhoneInput.classList.remove("hidden");
+    cardFields.classList.add("hidden");
+  }
+  else if(method === "card"){
+    payPhoneInput.classList.add("hidden");
+    cardFields.classList.remove("hidden");
+  }
+  else{
+    payPhoneInput.classList.add("hidden");
+    cardFields.classList.add("hidden");
+  }
 }
 
 // ================= ORDER =================
 async function placeOrder(){
 
 const payment = document.getElementById("payment").value;
+
 
 const order = {
 name: nameInput.value.trim(),
@@ -338,7 +459,9 @@ if((payment === "mtn" || payment === "airtel") && !isValidZambianPhone(order.pay
 alert("⚠ Enter valid Mobile Money number");
 return;
 }
-
+// 🔐 UNIVERSAL PAYMENT STEP (for ALL methods)
+alert("🔐 Securing your transaction...");
+await new Promise(r => setTimeout(r, 800));
 // COD FLOW (FIXED)
 if(payment === "cod"){
 
@@ -355,14 +478,51 @@ alert("✅ Order placed successfully (Cash on Delivery)");
 window.location.href = "order-success.html";
 return;
 }
+// CARD FLOW (SIMULATION)
+if(payment === "card"){
 
-// MOBILE MONEY SIMULATION
-alert("💳 Processing payment...");
+  const cardNumber = document.getElementById("cardNumber").value.trim();
+  const expiry = document.getElementById("cardExpiry").value.trim();
+  const cvv = document.getElementById("cardCVV").value.trim();
 
-await new Promise(r => setTimeout(r, 1000));
-alert("Connecting to network...");
+  if(!cardNumber || !expiry || !cvv){
+    alert("⚠ Fill all card details");
+    return;
+  }
 
+alert("🏦 Connecting to bank...");
 await new Promise(r => setTimeout(r, 1200));
+
+alert("🔄 Verifying card...");
+await new Promise(r => setTimeout(r, 1000));
+
+  const success = Math.random() > 0.2;
+
+  if(!success){
+    alert("❌ Card declined");
+    return;
+  }
+
+  alert("✅ Payment successful");
+
+  await fetch("/api/checkout",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:"Bearer "+token
+    },
+    body:JSON.stringify(order)
+  });
+
+  window.location.href = "order-success.html";
+  return;
+}
+// MOBILE MONEY SIMULATION
+alert("📲 Waiting for mobile money prompt...");
+await new Promise(r => setTimeout(r, 1500));
+
+alert("Enter your PIN on your phone...");
+await new Promise(r => setTimeout(r, 1500));
 
 const success = Math.random() > 0.1;
 
@@ -385,6 +545,16 @@ body:JSON.stringify(order)
 alert("🎉 Order confirmed!");
 window.location.href = "order-success.html";
 
+}
+function showToast(message, type="info") {
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.className = `toast show ${type}`;
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
 function initIcons(){
   lucide.createIcons();

@@ -6,6 +6,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
   <style>
+    /* SMOOTHNESS */
+*{
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+html{ scroll-behavior:smooth; }
+
 :root{
   --ev-green:#16c784;
   --ev-glow:rgba(22,199,132,0.18);
@@ -22,52 +28,80 @@ body{
   line-height:1.6;
 
   background:
-    radial-gradient(circle at 10% 10%, rgba(22,199,132,0.18), transparent 40%),
-    radial-gradient(circle at 90% 20%, rgba(0,140,255,0.12), transparent 45%),
-    linear-gradient(180deg,#f8fafc,#eef2f6);
+    radial-gradient(circle at 15% 20%, rgba(22,199,132,0.18), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(0,140,255,0.18), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(0,80,120,0.25), transparent 60%),
+    linear-gradient(180deg, #0f172a, #020617);
+
+  background-attachment: fixed;
 }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(22,199,132,0.06), transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(0,120,255,0.05), transparent 55%);
+
+  pointer-events:none;
+  z-index:-1;
+}
+
 /* NAV */
-.nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 40px;
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(0,0,0,0.06);
-  position:sticky;
-  top:0;
-  z-index:1000;
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 30px;
+
+  background: transparent; /* key change */
+  border-bottom: none;
+
+  position: absolute; /* makes it float over hero */
+  top: 10px;
+  left: 0;
+  width: 100%;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 9999;
 }
 
 .nav-center{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  font-weight:700;
-  font-size:22px;
-  letter-spacing:0.5px;
-  color:#111;
+  font-family: 'Cormorant Garamond', serif; /* same as dashboard */
+  font-size: 34px;   /* bigger, premium scale */
+  letter-spacing: 6px;
+
+  color: #e6edf3; /* light text for dark UI */
+
+  text-shadow: 0 0 12px rgba(0,140,255,0.25);
 }
 
 /* HERO (UNCHANGED TEXT, ONLY POLISH) */
 .hero{
   padding:90px 40px;
   color:white;
-  background:url("Images/community.png") center/cover no-repeat;
+  background:url("Images/waterfall.jpg") center/cover no-repeat;
   position:relative;
+background-attachment: fixed;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.hero::before{
+.hero::after{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    linear-gradient(120deg,
-      rgba(0,0,0,0.75),
-      rgba(22,199,132,0.25),
-      rgba(0,120,255,0.15)
-    );
+  background: none;
+
+  mix-blend-mode: overlay;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:120px;
+
 }
 
 .hero h1,
@@ -80,6 +114,7 @@ body{
   font-family:'Playfair Display', serif;
   font-size:42px;
   margin:0;
+   text-shadow: 0 5px 25px rgba(0,0,0,0.6);
 }
 
 .hero p{
@@ -87,6 +122,7 @@ body{
   margin-top:10px;
   font-size:16px;
   opacity:0.9;
+  text-shadow: 0 2px 15px rgba(0,0,0,0.5);
 }
 
 /* MAIN GRID */
@@ -99,46 +135,62 @@ body{
   margin:auto;
 }
 
-/* NEWS GRID */
 .news-section{
   display:grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-auto-rows: 220px; /* base height */
   gap:18px;
 }
 
-/* CARD SYSTEM */
 .news-card{
-  background:linear-gradient(145deg,
-    rgba(255,255,255,0.85),
-    rgba(240,255,250,0.65)
-  );
-  border:1px solid rgba(255,255,255,0.4);
+  background: rgba(20,30,50,0.65); /* 🔥 DARK BLUE GLASS */
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(0,140,255,0.25);
+
   border-radius:18px;
   padding:20px;
-  backdrop-filter:blur(14px);
+
+  color: #e6edf3; /* light text */
+
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.05),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-  transition:0.3s ease;
-}
-.news-card:hover{
-  transform:translateY(-8px);
-  box-shadow:
-    0 20px 50px rgba(22,199,132,0.15),
-    0 20px 60px rgba(0,120,255,0.08);
-  border-color:rgba(22,199,132,0.35);
+    0 15px 40px rgba(0,0,0,0.35),
+    0 0 25px rgba(0,140,255,0.12);
+
+  transition: 0.2s ease;
 }
 
-/* FEATURED */
+.news-card:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.45),
+    0 0 30px rgba(0,140,255,0.18);
+}
+
 .news-card.featured{
-  background:linear-gradient(135deg,
-    rgba(255,255,255,0.9),
-    rgba(220,255,240,0.7),
-    rgba(210,235,255,0.6)
-  );
-  border-left:5px solid var(--ev-green);
-  padding:26px;
-  position:relative;
-  overflow:hidden;
+  background: none;
+  border-left: none;
+  box-shadow: none;
+  padding: 0; /* 🔥 important */
+}
+.news-card.featured::before{
+  content:"";
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+
+  background: radial-gradient(circle, rgba(22,199,132,0.15), transparent 60%);
+  opacity:0.4;
+}
+.news-card.featured::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background: radial-gradient(circle at 20% 20%, rgba(22,199,132,0.18), transparent 60%);
+  opacity:0.6;
 }
 
 .news-card.featured h2{
@@ -152,8 +204,23 @@ body{
 }
 
 .news-card p{
-  color:var(--muted);
+  color: rgba(230,237,243,0.7);
   font-size:14px;
+}
+/* FEATURED = BIG */
+.news-card.featured{
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* MEDIUM */
+.news-card.medium{
+  grid-row: span 2;
+}
+
+/* SMALL (default) */
+.news-card.small{
+  grid-row: span 1;
 }
 
 /* TAG */
@@ -188,11 +255,15 @@ body{
 }
 
 .card{
-  background:rgba(255,255,255,0.8);
-  border:1px solid rgba(0,0,0,0.06);
-  border-radius:16px;
-  padding:18px;
-  backdrop-filter:blur(10px);
+  background: rgba(20,30,50,0.6);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(0,140,255,0.2);
+
+  color: #e6edf3;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.35);
 }
 
 /* MAP */
@@ -205,27 +276,93 @@ iframe{
 
 /* ICON BUTTON */
 .icon-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
   width:38px;
   height:38px;
   border-radius:50%;
   border:none;
-  background:#f5f5f5;
+
+  background: rgba(147, 140, 140, 0.05);
+  color:#ffffff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
   cursor:pointer;
-  transition:0.2s;
+  transition: all 0.2s ease;
 }
 
 .icon-btn:hover{
   background:#111;
   color:white;
+  transform: translateY(-1px);
 }
 
 .hero{
   animation:glowShift 12s ease-in-out infinite;
 }
-  </style>
+.image-card{
+  position: relative;
+  overflow: hidden;
+  padding: 0; /* 🔥 remove old padding */
+  display: block;
+  text-decoration: none;
+  height: 100%;
+}
+
+/* IMAGE */
+.image-card img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  transition: transform 0.4s ease;
+}
+
+/* OVERLAY */
+.image-card .overlay{
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 20px;
+
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.3),
+    transparent
+  );
+
+  color: white;
+}
+
+/* TEXT */
+.image-card h2,
+.image-card h3{
+  margin: 0;
+}
+
+.image-card p{
+  margin-top: 5px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* HOVER (subtle = premium) */
+.image-card:hover img{
+  transform: scale(1.05);
+}
+
+.image-card:hover{
+  transform: translateY(-2px);
+}
+
+ </style>
 </head>
 
 <body>
@@ -240,12 +377,13 @@ iframe{
   </div>
 
   <div class="nav-center">
-    ZEVL ⚡
+    ZEVL
   </div>
 
   <div class="nav-right"></div>
 
 </div>
+
 <!-- HERO -->
 <div class="hero">
   <h1>Understanding Electric Mobility in Zambia</h1>
@@ -257,89 +395,106 @@ iframe{
 <!-- MAIN -->
 <div class="container">
 
-  <!-- LEFT -->
-  <div class="news-section">
+<!-- LEFT -->
+<div class="news-section">
 
-    <div class="news-card featured">
+  <!-- FEATURED -->
+  <a href="https://en.wikipedia.org/wiki/ZESCO" target="_blank" class="news-card featured image-card">
+    <img src="Images/zambia.jpg">
+
+    <div class="overlay">
       <div class="tag">Featured</div>
       <h2>Zambia Accelerates National EV Charging Rollout</h2>
-      <p>
-        The government is expanding electric vehicle charging infrastructure across major cities and highways to support sustainable transport adoption.
-      </p>
-      <a href="https://en.wikipedia.org/wiki/ZESCO" target="_blank">Read full story →</a>
+      <p>Charging infrastructure expanding nationwide</p>
     </div>
+  </a>
 
-    <div class="news-card small">
+  <!-- CARD 1 -->
+  <a href="#" class="news-card small image-card">
+    <img src="Images/news.jpg">
+    <div class="overlay">
       <h3>ZESCO EV Charging Expansion Plan</h3>
       <p>National utility prepares rollout of EV stations across Zambia.</p>
-      <a href="#">Read more →</a>
     </div>
+  </a>
 
-    <div class="news-card small">
+  <!-- CARD 2 -->
+  <a href="#" class="news-card small image-card">
+    <img src="Images/blue-display.png">
+    <div class="overlay">
       <h3>Electric Motorcycle Growth in Africa</h3>
       <p>Last-mile EV adoption rising rapidly in urban transport.</p>
-      <a href="#">Read more →</a>
     </div>
+  </a>
 
-    <div class="news-card small">
+  <!-- CARD 3 -->
+  <a href="#" class="news-card small image-card">
+    <img src="Images/mining.jpg">
+    <div class="overlay">
       <h3>Battery Innovation Partnerships</h3>
       <p>Zambia explores regional EV battery production opportunities.</p>
-      <a href="#">Read more →</a>
     </div>
+  </a>
 
-    <div class="news-card small">
+  <!-- CARD 4 -->
+  <a href="#" class="news-card small image-card">
+    <img src="Images/market.jpg">
+    <div class="overlay">
       <h3>EV Market Outlook 2026</h3>
       <p>Africa’s EV market expected to grow significantly in coming years.</p>
-      <a href="#">Read more →</a>
     </div>
+  </a>
 
-  </div>
+</div>
 
-  <!-- RIGHT -->
-  <div class="sidebar">
+<!-- RIGHT -->
+<div class="sidebar">
 
-    <div class="card">
+  <!-- EV PLAYERS -->
+  <div class="card image-card">
+    <img src="Images/company.jpg">
+
+    <div class="overlay">
       <h3>Key EV Players</h3>
-      <div class="player">Ampersand</div>
-      <div class="player">ZESCO</div>
-      <div class="player">Vitalite Zambia</div>
+      <p>Ampersand • ZESCO • Vitalite Zambia</p>
     </div>
-
-    <a href="map.html" style="text-decoration:none; color:inherit;">
-      <div class="card">
-        <h3>Charging Locations</h3>
-
-        <p style="color:#555; font-size:13px;">
-          Explore all EV charging stations on a live interactive map.
-        </p>
-
-        <iframe src="https://maps.google.com/maps?q=Lusaka&t=&z=6&ie=UTF8&iwloc=&output=embed"></iframe>
-
-        <div style="margin-top:10px;">
-          <span style="
-            display:inline-block;
-            padding:8px 12px;
-            background:#16c784;
-            color:white;
-            border-radius:8px;
-            font-weight:600;
-            font-size:13px;
-          ">
-            Open Full Map →
-          </span>
-        </div>
-
-      </div>
-    </a>
-
   </div>
+
+  <!-- MAP -->
+  <a href="map.html" style="text-decoration:none; color:inherit;">
+    <div class="card image-card">
+      <img src="Images/globe.jpg">
+
+      <div class="overlay">
+        <h3>Charging Locations</h3>
+        <p>Explore EV stations across Zambia</p>
+        <span style="
+          display:inline-block;
+          margin-top:8px;
+          font-size:13px;
+          font-weight:600;
+          color:#16c784;
+        ">
+          Open Full Map →
+        </span>
+      </div>
+    </div>
+  </a>
+
+</div>
 
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-lucide.createIcons();
-function back(){ window.history.back(); }
+  lucide.createIcons();
+function back() {
+  if (window.history.length > 1) {
+    window.history.back();   // go to previous page
+  } else {
+    window.location.href = "index.html"; // fallback if no history
+  }
+}
 </script>
 
 </body>

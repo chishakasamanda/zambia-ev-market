@@ -6,30 +6,56 @@
   <title>Wishlist</title>
 
 <style>
+  body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(22,199,132,0.08), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(0,194,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
 .nav{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:18px 40px;
-  background:white;
-  border-bottom:1px solid #eee;
-  position:sticky;
-  top:0;
-}
 
-.nav-left, .nav-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
+  background: rgba(20,24,33,0.75);
+  backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .nav-center{
   position:absolute;
   left:50%;
   transform:translateX(-50%);
-  font-weight:700;
-  font-size:22px;
-  color:#111;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: white;
+}
+
+/* subtle gradient line */
+.nav::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:1px;
+  background:linear-gradient(90deg,#16c784,#3aa0ff);
+  opacity:0.3;
 }
 
 .icon-btn{
@@ -55,6 +81,8 @@
 .icon-btn:hover{
   background:#111;
   color:white;
+    background: linear-gradient(135deg,#16c784,#3aa0ff);
+  box-shadow: 0 0 15px rgba(22,199,132,0.4);
 }
 .header{
   padding: 30px 40px 10px;
@@ -62,11 +90,14 @@
 
 .header h1{
   margin: 0;
+  font-size:20px;
+  font-weight:600;
 }
 
 .header p{
-  color: #666;
-  margin-top: 5px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 6px;
+  font-size:13px;
 }
 
 /* GRID */
@@ -79,38 +110,44 @@
 
 /* CARD (same style as homepage) */
 .card{
-  background: rgba(255,255,255,0.85);
-  padding:15px;
-  border-radius:18px;
+  background: rgba(20,24,33,0.7);
+  backdrop-filter: blur(14px);
 
-  border:1px solid rgba(0,0,0,0.06);
-  backdrop-filter: blur(10px);
+  padding:16px;
+  border-radius:20px;
 
-  transition:0.25s ease;
+  border:1px solid rgba(255,255,255,0.06);
+
+  transition:0.3s ease;
   text-align:center;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.5),
+    0 0 20px rgba(22,199,132,0.05);
 }
 
 .card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 12px 25px rgba(0,0,0,0.08);
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.7),
+    0 0 25px rgba(22,199,132,0.15);
 }
-
-/* IMAGE */
 .card img{
   width:100%;
   height:160px;
   object-fit:cover;
-  border-radius:12px;
+  border-radius:14px;
   margin-bottom:10px;
-}
 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
 /* TEXT */
 .card h3{
   margin:10px 0 5px;
 }
 
 .card p{
-  color:#666;
+  color: rgba(255,255,255,0.6);
   margin:0;
 }
 
@@ -119,26 +156,36 @@ button{
   margin-top:12px;
   padding:10px;
   width:100%;
+
   border:none;
   border-radius:30px;
+
   font-weight:600;
   cursor:pointer;
 
-  background:linear-gradient(135deg,#16c784,#00c2ff);
+  background:linear-gradient(135deg,#16c784,#3aa0ff);
   color:white;
 
-  transition:0.25s ease;
+  border:1px solid rgba(255,255,255,0.15);
+
+  box-shadow:
+    0 8px 25px rgba(22,199,132,0.25),
+    inset 0 0 8px rgba(255,255,255,0.08);
+
+  transition: all 0.25s ease;
 }
 
 button:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+  transform:translateY(-3px) scale(1.02);
+
+  box-shadow:
+    0 12px 30px rgba(22,199,132,0.35),
+    0 0 20px rgba(58,160,255,0.25);
 }
 
 button:active{
-  transform:translateY(-2px) scale(0.98);
+  transform:scale(0.97);
 }
-
 /* EMPTY STATE */
 .empty{
   text-align:center;
@@ -171,17 +218,19 @@ button:active{
 .delete-btn{
   margin-top:10px;
   width:100%;
+
   padding:10px;
   border-radius:30px;
-  border:1px solid #ff4d4f;
-  background:white;
-  color:#ff4d4f;
-  cursor:pointer;
-  transition:0.2s;
+
+  border:1px solid rgba(255,77,77,0.4);
+  background: rgba(255,77,77,0.1);
+  color:#ff4d4d;
+
+  transition:0.25s;
 }
 
 .delete-btn:hover{
-  background:#ff4d4f;
+  background:#ff4d4d;
   color:white;
 }
 </style>
@@ -201,11 +250,17 @@ button:active{
 
   <!-- CENTER -->
   <div class="nav-center">
-    ZEVL ⚡
+    ZEVL 
   </div>
 
   <!-- RIGHT -->
-  <div class="nav-right"></div>
+  <div class="nav-right">
+
+  <button class="icon-btn" onclick="goCart()" title="Cart">
+    <i data-lucide="shopping-cart"></i>
+  </button>
+
+</div>
 
 </div>
 <!-- HEADER -->
@@ -334,6 +389,9 @@ loadWishlist();
 }catch{
 alert("Error moving to cart");
 }
+}
+function goCart(){
+  window.location = "cart.html";
 }
 
 loadWishlist();

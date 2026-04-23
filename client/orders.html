@@ -37,19 +37,27 @@
   font-size:18px;
 }
 
-.icon-btn{
+.icon-btn {
   width:38px;
   height:38px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   border-radius:50%;
   border:none;
-
   background: rgba(255,255,255,0.08);
   cursor:pointer;
+  transition: all 0.25s ease; /* 🔥 smooth animation */
+}
+
+.icon-btn:hover {
+  background: #16c784;              /* green glow */
+  transform: translateY(-2px);      /* slight lift */
+  box-shadow: 0 6px 20px rgba(22,199,132,0.4);
+}
+
+.icon-btn:hover svg {
+  stroke: white; /* keep icon visible */
 }
 
 .icon-btn svg{
@@ -178,6 +186,42 @@ body::before {
 .actions button:hover{
   background:#16c784;
 }
+.filters{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.filters button{
+  padding:6px 12px;
+  border:none;
+  border-radius:20px;
+  background: rgba(255,255,255,0.08);
+  color:white;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.filters button.active{
+  background:#16c784;
+}
+
+.status{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.status.pending{ background:#f59e0b33; color:#fbbf24; }
+.status.processing{ background:#3b82f633; color:#60a5fa; }
+.status.shipped{ background:#a855f733; color:#c084fc; }
+.status.delivered{ background:#16c78433; color:#16c784; }
+.status.cancelled {
+  background: #ef444433;
+  color: #ef4444;
+}
   </style>
 </head>
 
@@ -225,12 +269,23 @@ body::before {
     <div><b id="pendingOrders">0</b><br>Pending</div>
   </div>
 </div>
+ 
+<div class="filters">
+<button onclick="setFilter(event, 'all')" class="active">All</button>
+<button onclick="setFilter(event, 'pending')">Pending</button>
+<button onclick="setFilter(event, 'processing')">Processing</button>
+<button onclick="setFilter(event, 'shipped')">Shipped</button>
+<button onclick="setFilter(event, 'delivered')">Delivered</button>
+<button onclick="setFilter(event, 'cancelled')">Cancelled</button>
+</div>
 
   <div id="orders">Loading...</div>
 
 </div>
 
 <script>
+let currentFilter = "all";
+
 const token = localStorage.getItem("token");
 
 async function loadOrders(){
@@ -243,8 +298,9 @@ async function loadOrders(){
     });
 
     const data = await res.json();
+    
     let totalRevenue = 0;
-let totalOrders = data.length;
+let totalOrders = 0;
 let pending = 0;
 
     if(!data.length){
@@ -256,29 +312,51 @@ let pending = 0;
 
   data.forEach((o, index)=>{
 
+     console.log("ORDER:", o);
+
+     const status = (o.status || "pending").toLowerCase();
+
+if(currentFilter !== "all" && !status.includes(currentFilter)){
+  return;
+}
+  totalOrders++;
   totalRevenue += o.total || 0;
-  if(!o.status || o.status === "pending") pending++;
+if(status.includes("pending")) pending++;
 
   const div = document.createElement("div");
   div.className = "order-card";
 
-  div.innerHTML = `
-    <div><i data-lucide="user"></i> ${o.buyer_name}</div>
-    <div><i data-lucide="phone"></i> ${o.phone}</div>
-    <div><i data-lucide="map-pin"></i> ${o.address}</div>
+div.innerHTML = `
+  <div onclick="toggleOrder(this)" style="cursor:pointer;">
+<b>${o.buyer_name || "Unknown Customer"}</b> • ZMW ${o.total || 0}
+  </div>
+
+  <div class="order-details" style="display:none; margin-top:10px;">
+    <div><i data-lucide="phone"></i> ${o.phone || "N/A"}</div>
+    <div><i data-lucide="map-pin"></i> ${o.address || "No address"}</div>
 
     <br>
 
-    <div><b>Items:</b> ${o.items}</div>
-    <div><b>Total:</b> ZMW ${o.total || 0}</div>
-    <div><b>Status:</b> ${o.status || "pending"}</div>
+    <div><b>Items:</b> ${o.items || "No items"}</div>
 
+<div class="status ${
+  status.includes('pending') ? 'pending' :
+  status.includes('processing') ? 'processing' :
+  status.includes('shipped') ? 'shipped' :
+  status.includes('delivered') ? 'delivered' :
+  status.includes('cancelled') ? 'cancelled' :
+  'pending'
+}">
+
+  ${o.status || "pending"}
+</div>
     <div class="actions">
       <button onclick="updateStatus(${o.id}, 'processing')">Processing</button>
       <button onclick="updateStatus(${o.id}, 'shipped')">Shipped</button>
       <button onclick="updateStatus(${o.id}, 'delivered')">Delivered</button>
     </div>
-  `;
+  </div>
+`;
 
   box.appendChild(div);
 
@@ -287,8 +365,10 @@ let pending = 0;
   }, index * 80);
 
 });
+const avg = totalOrders ? (totalRevenue / totalOrders).toFixed(2) : 0;
 
-document.getElementById("totalRevenue").innerText = "ZMW " + totalRevenue;
+document.getElementById("totalRevenue").innerText =
+  "ZMW " + totalRevenue + " (Avg: " + avg + ")";
 document.getElementById("totalOrders").innerText = totalOrders;
 document.getElementById("pendingOrders").innerText = pending;
 
@@ -297,6 +377,25 @@ lucide.createIcons(); // ✅ re-render icons after DOM update
     box.innerHTML = "Failed to load orders";
   }
 }
+
+function toggleOrder(el){
+  const details = el.nextElementSibling;
+  details.style.display =
+    details.style.display === "none" ? "block" : "none";
+}
+
+function setFilter(e, status){
+  currentFilter = status;
+
+  document.querySelectorAll(".filters button").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  e.target.classList.add("active");
+
+  loadOrders();
+}
+
 function filterOrders(){
   const input = document.getElementById("search").value.toLowerCase();
   const cards = document.querySelectorAll(".order-card");

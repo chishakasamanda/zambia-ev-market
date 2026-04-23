@@ -6,30 +6,63 @@
 
 <style>
 
-body{
-  margin:0;
-  font-family:'Poppins', sans-serif;
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
 
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  min-height:100vh;
 
   background:
-    radial-gradient(circle at 20% 20%, #f8fafc 0%, transparent 50%),
-    radial-gradient(circle at 80% 30%, #eef2f6 0%, transparent 55%),
-    linear-gradient(180deg, #ffffff 0%, #f3f5f7 50%, #e9edf2 100%);
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color: white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(22,199,132,0.05), transparent 65%);
+  pointer-events: none;
+}
+.nav {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .card{
-  background: rgba(255,255,255,0.9);
-  padding:40px;
+  margin-top:80px;
+
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(14px);
+
+  padding:35px;
   border-radius:20px;
-  width:360px;
+  width:380px;
   text-align:center;
 
-  border:1px solid rgba(0,0,0,0.06);
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.6),
+    0 0 40px rgba(22,199,132,0.08);
 
   animation: pop 0.4s ease;
 }
@@ -41,11 +74,11 @@ body{
 
 h1{
   margin-bottom:10px;
-  color:#16c784;
+  font-size:22px;
 }
 
 p{
-  color:#555;
+  color: rgba(255,255,255,0.6);
   font-size:14px;
   margin-bottom:25px;
 }
@@ -56,11 +89,12 @@ p{
 }
 
 /* BUTTON */
+/* BUTTONS */
 button{
   width:100%;
-  padding:12px;
+  padding:14px;
   border:none;
-  border-radius:25px;
+  border-radius:30px;
   cursor:pointer;
   font-weight:600;
 
@@ -71,8 +105,17 @@ button{
 }
 
 button:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(22,199,132,0.25);
+}
+
+.secondary{
+  margin-top:10px;
+  background: rgba(255,255,255,0.08);
+}
+
+.secondary:hover{
+  background: rgba(255,255,255,0.12);
 }
 
 .small-text{
@@ -83,7 +126,7 @@ button:hover{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.6);
 
   display:flex;
   justify-content:center;
@@ -91,7 +134,7 @@ button:hover{
 
   opacity:0;
   pointer-events:none;
-  transition:0.2s;
+  transition:0.25s;
 }
 
 .modal.show{
@@ -100,10 +143,62 @@ button:hover{
 }
 
 .modal-box{
-  background:white;
+  background: rgba(20,24,33,0.95);
+  backdrop-filter: blur(12px);
+
   padding:25px;
-  border-radius:16px;
-  width:320px;
+  border-radius:18px;
+  width:420px;
+  max-height:80vh;
+  overflow-y:auto;
+
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+/* sections */
+.section{
+  margin-bottom:18px;
+  text-align:left;
+}
+
+.section-title{
+  font-size:13px;
+  font-weight:600;
+  color:#999;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin:4px 0;
+}
+
+.highlight{
+  color:#16c784;
+  font-weight:600;
+}
+
+/* items */
+.item{
+  display:flex;
+  justify-content:space-between;
+  background:#f7f9fb;
+  padding:8px 10px;
+  border-radius:10px;
+  margin-bottom:6px;
+  font-size:13px;
+}
+
+/* total */
+.total{
+  display:flex;
+  justify-content:space-between;
+  font-size:16px;
+  font-weight:700;
+  margin-top:10px;
 }
 
 
@@ -134,7 +229,7 @@ Edit Address
 </button>
 
 <div class="small-text">
-ZEVL⚡
+ZEVL
 </div>
 
 </div>

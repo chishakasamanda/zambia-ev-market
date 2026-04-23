@@ -2,149 +2,390 @@
 <html>
 <head>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 <title>Seller Profile</title>
 
 <style>
 body{
-  font-family:Poppins,sans-serif;
   margin:0;
-  background:#f6f7fb;
+  font-family:'Poppins',sans-serif;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120,80,255,0.10), transparent 45%),
+    radial-gradient(circle at 70% 40%, rgba(0,200,255,0.08), transparent 50%),
+    linear-gradient(180deg, #0f1115 0%, #141821 100%);
+
+  color:white;
 }
 
 .container{
-  max-width:520px;
+  max-width:600px;
   margin:40px auto;
   padding:25px;
-  background:white;
-  border-radius:18px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(14px);
+
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.08);
 }
 
-/* HEADER */
-.header h2{
-  margin:0;
+/* HEADER PROFILE */
+.profile-header{
+  text-align:center;
+  margin-bottom:20px;
 }
 
-.header p{
-  margin-top:5px;
-  color:#666;
-  font-size:14px;
+.avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,0.2);
+  margin-bottom:10px;
 }
 
-/* SECTION BLOCKS */
-.section{
-  margin-top:20px;
-  padding:15px;
-  border:1px solid #eee;
-  border-radius:14px;
-  background:#fafafa;
-}
-
-label{
-  display:block;
-  font-size:13px;
+.shop-name{
+  font-size:20px;
   font-weight:600;
-  margin-bottom:6px;
-  color:#333;
+}
+
+.status{
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:20px;
+  display:inline-block;
+  margin-top:5px;
+  background:rgba(255,165,0,0.15);
+  color:#ffb347;
+}
+
+/* SECTION */
+.section{
+  margin-top:18px;
+  padding:18px;
+  border-radius:14px;
+  background: rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
 }
 
 /* INPUTS */
+label{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+  display:block;
+  color:rgba(255,255,255,0.8);
+}
+
 input{
   width:100%;
-  padding:11px;
-  margin-bottom:10px;
-  border:1px solid #ddd;
+  padding:12px;
+  margin-bottom:12px;
+
   border-radius:10px;
-  outline:none;
-  transition:0.2s;
-  background:white;
+  border:1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.05);
+  color:white;
+}
+
+input::placeholder{
+  color:rgba(255,255,255,0.5);
 }
 
 input:focus{
+  outline:none;
   border-color:#16c784;
-  box-shadow:0 0 0 3px rgba(22,199,132,0.15);
+  box-shadow:0 0 0 2px rgba(22,199,132,0.2);
 }
 
-/* DOCUMENT PREVIEW (IMPORTANT CHANGE) */
+.upload-box{
+  border:1px dashed rgba(255,255,255,0.2);
+  border-radius:14px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.25s;
+  background: rgba(255,255,255,0.02);
+}
+
+.upload-box:hover{
+  border-color:#16c784;
+  background: rgba(22,199,132,0.05);
+}
+
 .doc-preview{
   width:100%;
-  height:180px;
+  height:160px;
   object-fit:contain;
-  border-radius:12px;
-  border:2px dashed #ddd;
-  background:white;
   margin-bottom:10px;
 }
 
-/* HINT TEXT */
-.hint{
-  font-size:12px;
-  color:#777;
-  margin-top:0;
-}
+button:not(.back-btn){
+  width:220px;
+  padding:12px 28px;
+  display:block;
+  margin:20px auto 0;
 
-/* BUTTON */
-button{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  background:linear-gradient(135deg,#16c784,#00c2ff);
-  color:white;
   border:none;
-  border-radius:12px;
+  border-radius:30px;
+
+  background:linear-gradient(135deg,#16c784,#00c2ff);
+
+  color:white;
   font-weight:600;
   cursor:pointer;
+
   transition:0.25s ease;
 }
 
-button:hover{
+button:not(.back-btn):hover{
   transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(22,199,132,0.25);
+  box-shadow:0 10px 30px rgba(22,199,132,0.25);
+}
+
+.section-title{
+  margin-top:25px;
+  margin-bottom:10px;
+  font-size:13px;
+  letter-spacing:0.6px;
+  color:rgba(255,255,255,0.6);
+}
+button:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+.back-btn{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  width: 46px;   /* ⬆ increased */
+  height: 46px;  /* ⬆ increased */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(0,140,255,0.25);
+  background: rgba(20,30,50,0.6);
+
+  color: #e6edf3;
+
+  backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.35),
+    0 0 20px rgba(0,140,255,0.15);
+  transition: all 0.25s ease;
+}
+.back-btn:hover{
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 12px 35px rgba(0,0,0,0.4),
+    0 0 25px rgba(0,140,255,0.35);
+}
+/* make icon bigger */
+.back-btn i{
+  width: 20px;
+  height: 20px;
+}
+.icon-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+
+  background: rgba(255,255,255,0.08);
+  color:white;
+
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.icon-btn:hover{
+  background:#111;
+}
+
+/* force icon color */
+.icon-btn svg{
+  stroke:white;
+}
+.profile-row{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.profile-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.shop-name{
+  font-size:20px;
+  font-weight:600;
+}
+
+.status-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:5px;
+}
+
+#trustIcon{
+  font-size:13px;
+  opacity:0.7;
+}
+
+/* progress styling */
+.progress-wrapper{
+  margin-top:15px;
+}
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+}
+
+.progress-bar-bg{
+  background:#222;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:5px;
+}
+
+.progress-bar{
+  height:8px;
+  width:0%;
+  background:#16c784;
 }
 </style>
 </head>
+<body>
+<button class="back-btn" onclick="goBack()" title="Back">
+  <i data-lucide="arrow-left"></i>
+</button>
+
 <div class="container">
+<div class="profile-header">
+  <div class="profile-row">
+    <img id="preview" class="avatar">
 
-  <div class="header">
-    <h2>Seller Verification</h2>
-    <p>Complete your business details for account approval</p>
+    <div class="profile-info">
+      <div class="shop-name" id="shopDisplay">Your Shop</div>
+
+      <div class="status-row">
+        <div class="status" id="statusBadge">Pending</div>
+        <span id="trustIcon">Secure</span>
+      </div>
+    </div>
   </div>
 
-  <!-- DOCUMENT UPLOAD -->
-  <div class="section">
-    <label>Verification Document</label>
+  <!-- keep progress bar below -->
+  <div class="progress-wrapper">
+    <div class="progress-top">
+      <span>Profile Completion</span>
+      <span id="progressText">0%</span>
+    </div>
 
-    <img id="preview" class="doc-preview">
-
-    <p class="hint">
-      Upload business license / ID / tax document (used for verification only)
-    </p>
-
-    <input type="file" id="image">
+    <div class="progress-bar-bg">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
   </div>
-
-  <!-- FORM -->
-  <div class="section">
-    <label>Full Name</label>
-    <input id="name" placeholder="Enter full name">
-
-    <label>Shop / Business Name</label>
-    <input id="shop_name" placeholder="Enter shop name">
-
-    <label>Phone Number</label>
-    <input id="phone" placeholder="Enter phone number">
-  </div>
-
-  <button onclick="saveProfile()">Save & Continue</button>
-
 </div>
 
+<h3 class="section-title">Profile</h3>
+<div class="section">
+  <label>Profile Picture</label>
+
+  <div class="upload-box" onclick="document.getElementById('profileImage').click()">
+    <img id="previewProfile" class="doc-preview">
+    <p style="font-size:12px; opacity:0.7;">
+      Click to upload profile picture
+    </p>
+  </div>
+
+  <input type="file" id="profileImage" hidden>
+</div>
+
+<h3 class="section-title">Verification</h3>
+<div class="section">
+  <label>Verification Document</label>
+
+  <div class="upload-box" onclick="document.getElementById('image').click()">
+    <img id="previewDoc" class="doc-preview">
+    <p style="font-size:12px; opacity:0.7;">
+      Click to upload business license / ID
+    </p>
+  </div>
+
+  <input type="file" id="image" hidden>
+</div>
+
+
+<h3 class="section-title">Business Details</h3>
+<div class="section">
+  <label>Full Name</label>
+  <input id="name" placeholder="Enter full name">
+
+  <label>Shop / Business Name</label>
+  <input id="shop_name" placeholder="Enter shop name">
+
+  <label>Phone Number</label>
+  <input id="phone" placeholder="Enter phone number">
+
+  <!-- NEW UI ONLY (no backend impact) -->
+  <label>Business Category</label>
+ <input id="category" placeholder="e.g. Electronics, Charging systems">
+
+  <label>Store Description</label>
+<input id="description" placeholder="Short description about your shop">
+
+<label>Location</label>
+<input id="location" placeholder="City, Country">
+</div>
+
+<button id="saveBtn" onclick="saveProfile()">Save</button>
+<p style="font-size:11px; opacity:0.6; text-align:center; margin-top:10px;">
+  Your documents are securely stored and only used for verification.
+</p>
+
+
+
 <script>
+
+document.getElementById("image").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(file){
+    const url = URL.createObjectURL(file);
+    document.getElementById("previewDoc").src = url;
+  }
+});
+
+document.getElementById("profileImage").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(file){
+    const url = URL.createObjectURL(file);
+    document.getElementById("previewProfile").src = url;
+    document.getElementById("preview").src = url; // updates avatar
+  }
+});
 
 const token = localStorage.getItem("token");
 if(!token) window.location="login.html";
 
 // ================= LOAD PROFILE =================
+
 async function loadProfile(){
 
   const res = await fetch("/api/seller/profile", {
@@ -152,29 +393,123 @@ async function loadProfile(){
   });
 
   const data = await res.json();
+  const status = data.status || "pending";
+const badge = document.getElementById("statusBadge");
+
+if(status === "approved"){
+  badge.innerText = "Verified";
+  badge.style.background = "rgba(22,199,132,0.2)";
+  badge.style.color = "#16c784";
+}
+else if(status === "rejected"){
+  badge.innerText = "Action Required";
+  badge.style.background = "rgba(255,80,80,0.15)";
+  badge.style.color = "#ff4d4d";
+}
+else{
+  badge.innerText = "Pending";
+  badge.style.background = "rgba(255,165,0,0.15)";
+  badge.style.color = "#ffb347";
+}
 
   document.getElementById("name").value = data.name || "";
   document.getElementById("shop_name").value = data.shop_name || "";
   document.getElementById("phone").value = data.phone || "";
 
-  if(data.profile_image){
-    document.getElementById("preview").src = data.profile_image;
-  } else {
-    document.getElementById("preview").src = "https://via.placeholder.com/90";
-  }
+  document.getElementById("category").value = data.category || "";
+document.getElementById("description").value = data.description || "";
+document.getElementById("location").value = data.location || "";
+
+  document.getElementById("shopDisplay").innerText =
+    data.shop_name || "Your Shop";
+
+ if(data.profile_image){
+  document.getElementById("preview").src = data.profile_image;
+  document.getElementById("previewProfile").src = data.profile_image;
+} else {
+  document.getElementById("preview").src = "https://via.placeholder.com/90";
+  document.getElementById("previewProfile").src = "https://via.placeholder.com/150";
 }
 
+if(data.verification_doc){
+  document.getElementById("previewDoc").src = data.verification_doc;
+} else {
+  document.getElementById("previewDoc").src = "https://via.placeholder.com/150";
+}
+
+  updateCompletion(data); // (we’ll add this next)
+}
+
+function updateCompletion(data){
+
+  const fields = [
+    data.name,
+    data.shop_name,
+    data.phone,
+    data.category,
+    data.description,
+    data.location,
+    data.profile_image
+  ];
+
+  const filled = fields.filter(f => f && f !== "").length;
+  const percent = Math.floor((filled / fields.length) * 100);
+document.getElementById("progressBar").style.width = percent + "%";
+document.getElementById("progressText").innerText = percent + "%";
+}
 // ================= SAVE PROFILE =================
 async function saveProfile(){
+
+const btn = document.getElementById("saveBtn");
+btn.innerText = "Saving...";
+btn.disabled = true;
 
   const fd = new FormData();
 
   fd.append("name", document.getElementById("name").value);
   fd.append("shop_name", document.getElementById("shop_name").value);
   fd.append("phone", document.getElementById("phone").value);
+  fd.append("category", document.getElementById("category").value);
+fd.append("description", document.getElementById("description").value);
+fd.append("location", document.getElementById("location").value);
 
-  const file = document.getElementById("image").files[0];
-  if(file) fd.append("image", file);
+
+ const docFile = document.getElementById("image").files[0];
+const profileFile = document.getElementById("profileImage").files[0];
+
+if(docFile) fd.append("verification_doc", docFile);
+if(profileFile) fd.append("profile_image", profileFile);
+
+  if(!fd.get("name") || !fd.get("shop_name") || !fd.get("phone")){
+  alert("Please complete required fields");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+  return;
+}
+
+if(!fd.get("category") || !fd.get("description")){
+  alert("Complete your business details");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+  return;
+}
+
+
+const hasExistingDoc = !document.getElementById("previewDoc").src.includes("placeholder");
+
+if(!docFile && !hasExistingDoc){
+  alert("Upload verification document");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+  return;
+}
+
+if(!profileFile && document.getElementById("preview").src.includes("placeholder")){
+  alert("Upload profile picture");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+  return;
+}
 
   try {
     const res = await fetch("/api/seller/profile", {
@@ -185,15 +520,27 @@ async function saveProfile(){
       body: fd
     });
 
+    await new Promise(r => setTimeout(r, 800));
     const data = await res.json();
 
     if(!res.ok){
-      alert(data.message || "Failed to save profile");
-      return;
-    }
-
+  alert(data.message || "Failed to save profile");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+  return;
+}
     // ✅ SUCCESS POPUP
-    alert("Profile saved successfully ✔");
+  alert("Profile submitted. Verification in progress.");
+
+  updateCompletion({
+  name: fd.get("name"),
+  shop_name: fd.get("shop_name"),
+  phone: fd.get("phone"),
+  category: fd.get("category"),
+  description: fd.get("description"),
+  location: fd.get("location"),
+profile_image: profileFile || document.getElementById("preview").src
+});
 
     // ✅ redirect after short delay
     setTimeout(() => {
@@ -201,12 +548,19 @@ async function saveProfile(){
     }, 500);
 
   } catch (err) {
-    console.log(err);
-    alert("Something went wrong");
-  }
+  console.log(err);
+  alert("Something went wrong");
+  btn.innerText = "Save & Continue";
+  btn.disabled = false;
+}
+}
+
+function goBack(){
+  window.location = "products.html";
 }
 
 loadProfile();
+lucide.createIcons();
 
 </script>
 
